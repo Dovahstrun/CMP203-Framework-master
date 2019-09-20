@@ -48,8 +48,19 @@ void Scene::render() {
 	gluLookAt(0.0f, 0.0f, 6.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f);
 	
 	// Render geometry/scene here -------------------------------------
-	
 
+	/*glTranslatef(-2.0, 1.0, 0.0);*/
+	glScalef(2, 2, 2);
+	
+	glBegin(GL_TRIANGLES);
+
+	glColor3f(1.0, 0.0, 0.0);
+
+	glVertex3f(0.0, 1.0, 0.0);
+	glVertex3f(-1.0, 0.0, 0.0);
+	glVertex3f(1.0, 0.0, 0.0);
+
+	glEnd();
 
 	// End render geometry --------------------------------------
 
