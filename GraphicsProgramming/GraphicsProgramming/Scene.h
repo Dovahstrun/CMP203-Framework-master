@@ -52,6 +52,8 @@ protected:
 	char fps[40];
 	char mouseText[40];
 
+	//My variables
+	float rotation = 0.0f;
 };
 
 #endif

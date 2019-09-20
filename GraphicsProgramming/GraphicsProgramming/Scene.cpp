@@ -9,7 +9,7 @@ Scene::Scene(Input *in)
 		
 	//OpenGL settings
 	glShadeModel(GL_SMOOTH);							// Enable Smooth Shading
-	glClearColor(0.39f, 0.58f, 93.0f, 1.0f);			// Cornflour Blue Background
+	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);				// Black Background
 	glClearDepth(1.0f);									// Depth Buffer Setup
 	glClearStencil(0);									// Clear stencil buffer
 	glEnable(GL_DEPTH_TEST);							// Enables Depth Testing
@@ -49,10 +49,109 @@ void Scene::render() {
 	
 	// Render geometry/scene here -------------------------------------
 
-	/*glTranslatef(-2.0, 1.0, 0.0);*/
-	glScalef(2, 2, 2);
+	rotation -= 1.0f;
+
+	// rotate matrix
+	glTranslatef(-1.0f, 0.0f, 0.0f);//tilt our solar system slightly so it isn’t on the eye plane
+	glRotatef(20, 1, 0, 0);
+	glPushMatrix();// Remember where we are.  THE SUN
+
+		// render the sun
+		glColor3f(1.0f, 0.9f, 0.0f);
+		gluSphere(gluNewQuadric(), 0.20, 20, 20);
+		glPushMatrix();//render planet 1
+			glRotatef(rotation * 4, 0, 1, 0);
+			glTranslatef(1, 0, 0);
+			glRotatef(rotation, 0, 1, 0);
+			glScalef(0.1, 0.1, 0.1);
+			glColor3f(0.8f, 0.1f, 0.1f);
+			gluSphere(gluNewQuadric(), 0.20, 20, 20);
+		glPopMatrix();//GO BACK TO SUN
+
+		glPushMatrix(); // REMEMBER WHERE WE ARE
+		// render planet 2
+			glRotatef(rotation * 2, 0, 1, 0);
+			glTranslatef(1.5, 0, 0);
+			glRotatef(rotation, 0, 1, 0);
+			glScalef(0.3, 0.3, 0.3);
+			glColor3f(0.1f, 0.9f, 1.0f);
+			gluSphere(gluNewQuadric(), 0.20, 20, 20);
 	
-	glBegin(GL_TRIANGLES);
+			glPushMatrix(); // REMEMBER WHERE WE ARE
+				// Render a moon around planet 2
+				glRotatef((rotation*2*2.0), 0, 1, 0);
+				glTranslatef(1, 0, 0);
+				glScalef(0.3, 0.3, 0.3);
+				glColor3f(0.8f, 0.8f, 0.8f);
+				gluSphere(gluNewQuadric(), 0.20, 20, 20);
+
+				glPushMatrix(); // REMEMBER WHERE WE ARE
+								// Render a moon around planet 2's moon
+				glRotatef((rotation * 2 * 2.0), 0, 1, 0);
+				glTranslatef(1, 0, 0);
+				glScalef(0.3, 0.3, 0.3);
+				glColor3f(0.8f, 0.8f, 0.8f);
+				gluSphere(gluNewQuadric(), 0.20, 20, 20);
+				glPopMatrix();
+
+			glPopMatrix();
+
+		glPopMatrix();//GO BACK TO SUN
+
+		glPushMatrix();//render planet 3
+			glRotatef(-rotation * 0.7, 0, 1, 0);
+			glTranslatef(3, 0, 0);
+			glRotatef(rotation, 0, 1, 0);
+			glScalef(0.7, 0.7, 0.7);
+			glColor3f(0.9f, 0.3f, 0.1f);
+			gluSphere(gluNewQuadric(), 0.20, 20, 20);
+
+			glPushMatrix(); // REMEMBER WHERE WE ARE
+							// Render a moon around planet 3
+				glRotatef((rotation * 2 * 2.0), 0, 1, 0);
+				glTranslatef(1, 0, 0);
+				glScalef(0.3, 0.3, 0.3);
+				glColor3f(0.8f, 0.8f, 0.8f);
+				gluSphere(gluNewQuadric(), 0.20, 20, 20);
+			glPopMatrix();
+
+			glPushMatrix(); // REMEMBER WHERE WE ARE
+							// Render another moon around planet 3
+			glRotatef((rotation * 2 * 2.0), 0, 0, 1);
+			glTranslatef(-1, 0, 0);
+			glScalef(0.3, 0.3, 0.3);
+			glColor3f(0.8f, 0.8f, 0.8f);
+			gluSphere(gluNewQuadric(), 0.20, 20, 20);
+			glPopMatrix();
+
+		glPopMatrix();//GO BACK TO SUN
+	glPopMatrix();
+	
+	// Notice the indentation, this helps keep track of all the pushes and pops
+	
+	/*glTranslatef(-2.0, 1.0, 0.0);*/
+	//glScalef(2, 0.5, 0);
+
+	/*if (input->isKeyDown('o'))
+	{
+		glRotatef(45, 0, 1, 0);
+	}
+	else if (input->isKeyDown('p'))
+	{
+		glRotatef(-60, 0, 1, 0);
+	}*/
+
+	/*rotation -= 5.0f;*/
+
+	/*glTranslatef(2, 0, 0);
+	glScalef(1, 1, 1);
+	glRotatef(rotation, 0, 0, 1);*/
+	
+	/*glRotatef(rotation, 0, 0, 1);
+	glScalef(1, 1, 1);
+	glTranslatef(1, 0, 0);*/
+	
+	/*glBegin(GL_TRIANGLES);
 
 	glColor3f(1.0, 0.0, 0.0);
 
@@ -60,7 +159,25 @@ void Scene::render() {
 	glVertex3f(-1.0, 0.0, 0.0);
 	glVertex3f(1.0, 0.0, 0.0);
 
-	glEnd();
+	glEnd();*/
+
+	/*glClear;*/
+
+	/*glRotatef(rotation, 0, 0, 1);
+	glScalef(0.5, 0.5, 0.5);
+	glTranslatef(3, 0, 0);*/
+
+	/*glBegin(GL_TRIANGLES);
+
+	glColor3f(0.0, 0.0, 1.0);
+
+	glVertex3f(0.0, 1.0, 0.0);
+	glVertex3f(-1.0, 0.0, 0.0);
+	glVertex3f(1.0, 0.0, 0.0);
+
+	glEnd();*/
+
+	glColor3f(1.0f, 1.0f, 1.0f);
 
 	// End render geometry --------------------------------------
 
