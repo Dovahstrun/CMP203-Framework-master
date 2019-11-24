@@ -9,7 +9,7 @@ Scene::Scene(Input *in)
 		
 	//OpenGL settings
 	glShadeModel(GL_SMOOTH);							// Enable Smooth Shading
-	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);				// Black Background
+	glClearColor(0.0f, 0.0f, 1.0f, 1.0f);				// Black Background
 	glClearDepth(1.0f);									// Depth Buffer Setup
 	glClearStencil(0);									// Clear stencil buffer
 	glEnable(GL_DEPTH_TEST);							// Enables Depth Testing
@@ -18,20 +18,148 @@ Scene::Scene(Input *in)
 	glLightModelf(GL_LIGHT_MODEL_LOCAL_VIEWER, 1);
 
 	// Other OpenGL / render setting should be applied here.
-	
+	glutSetCursor(GLUT_CURSOR_NONE);
 
 	// Initialise scene variables
-	
+
+
+	//Define lights
+
+	//glEnable(GL_COLOR_MATERIAL);
+	//glEnable(GL_LIGHTING);
+
+
+	//Depth Test
+	glEnable(GL_DEPTH_TEST); 
+	glDepthFunc(GL_LEQUAL);
+	glEnable(GL_TEXTURE_2D);
+
+
+	myTexture = SOIL_load_OGL_texture
+	(
+		"gfx/cratearrow.png",
+		SOIL_LOAD_AUTO,
+		SOIL_CREATE_NEW_ID,
+		SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT
+	);
+
+	Omnitrix = SOIL_load_OGL_texture
+	(
+		"gfx/ben10.png",
+		SOIL_LOAD_AUTO,
+		SOIL_CREATE_NEW_ID,
+		SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT
+	);
+
+	triangle = SOIL_load_OGL_texture
+	(
+		"gfx/bluered.png",
+		SOIL_LOAD_AUTO,
+		SOIL_CREATE_NEW_ID,
+		SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT
+	);
+
+	rubiks = SOIL_load_OGL_texture
+	(
+		"gfx/rubiks.png",
+		SOIL_LOAD_AUTO,
+		SOIL_CREATE_NEW_ID,
+		SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT
+	);
+
+	checks = SOIL_load_OGL_texture
+	(
+		"gfx/checked.png",
+		SOIL_LOAD_AUTO,
+		SOIL_CREATE_NEW_ID,
+		SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT
+	);
 }
+
 
 void Scene::handleInput(float dt)
 {
 	// Handle user input
+	if (input->isKeyDown('r'))
+	{
+		glGetIntegerv(GL_POLYGON_MODE, &polygonMode);
+		if (polygonMode == GL_FILL)
+		{
+			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		}
+		else
+		{
+			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		}
+		input->SetKeyUp('r');
+	}
+
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////////
+	///MOVEMENT
+	//////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	//Forwards and back
+	if (input->isKeyDown('w'))
+	{
+		camera.moveForward(dt);//Forward
+	}
+	if (input->isKeyDown('s'))
+	{
+		camera.moveBackward(dt);//Backward
+	}
+
+	//Up and down
+	if (input->isKeyDown(' '))
+	{
+		camera.moveUp(dt);//Up
+	}
+	if (input->isKeyDown('f'))
+	{
+		camera.moveDown(dt);//Down
+	}
+
+	//Left and right
+	if (input->isKeyDown('a'))
+	{
+		camera.moveLeft(dt);//Left
+	}
+	if (input->isKeyDown('d'))
+	{
+		camera.moveRight(dt);//Right
+	}
+
+
+	if (input->isKeyDown('o'))
+	{
+		camera.rotateLeft();
+	}
+	if (input->isKeyDown('p'))
+	{
+		camera.rotateRight();
+	}
+
+	if (input->getMouseX() != 0.0f)
+	{
+		float xDistance = input->getMouseX() - width / 2;
+		camera.rotateYaw(xDistance, dt);
+	}
+	if (input->getMouseY() != 0.0f)
+	{
+		float yDistance = input->getMouseY() - height / 2;
+		camera.rotatePitch(yDistance, dt);
+		input->setMouseY(height / 2);
+	}
+	glutWarpPointer(width/2, height/2);
+	
 }
 
 void Scene::update(float dt)
 {
 	// update scene related variables.
+
+	//Update camera
+	camera.update(dt);
 
 	// Calculate FPS for output
 	calculateFPS();
@@ -45,139 +173,168 @@ void Scene::render() {
 	// Reset transformations
 	glLoadIdentity();
 	// Set the camera
-	gluLookAt(0.0f, 0.0f, 6.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f);
+	//gluLookAt(0.0f, 0.0f, 6.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f);
+	gluLookAt(camera.getPosition().x, camera.getPosition().y, camera.getPosition().z, camera.getLookAt().x, camera.getLookAt().y, camera.getLookAt().z, camera.getUp().x, camera.getUp().y, camera.getUp().z);
 	
 	// Render geometry/scene here -------------------------------------
 
-	rotation -= 1.0f;
+	rotation += 0.2f;
+	glBindTexture(GL_TEXTURE_2D, rubiks);
+	glRotatef(rotation, 1, 1, 0);
 
-	// rotate matrix
-	glTranslatef(-1.0f, 0.0f, 0.0f);//tilt our solar system slightly so it isn’t on the eye plane
-	glRotatef(20, 1, 0, 0);
-	glPushMatrix();// Remember where we are.  THE SUN
+	//Front face
+	glBegin(GL_QUADS); //Begin drawing state
 
-		// render the sun
-		glColor3f(1.0f, 0.9f, 0.0f);
-		gluSphere(gluNewQuadric(), 0.20, 20, 20);
-		glPushMatrix();//render planet 1
-			glRotatef(rotation * 4, 0, 1, 0);
-			glTranslatef(1, 0, 0);
-			glRotatef(rotation, 0, 1, 0);
-			glScalef(0.1, 0.1, 0.1);
-			glColor3f(0.8f, 0.1f, 0.1f);
-			gluSphere(gluNewQuadric(), 0.20, 20, 20);
-		glPopMatrix();//GO BACK TO SUN
+		glColor3f(1.0f, 1.0f, 1.0f);
 
-		glPushMatrix(); // REMEMBER WHERE WE ARE
-		// render planet 2
-			glRotatef(rotation * 2, 0, 1, 0);
-			glTranslatef(1.5, 0, 0);
-			glRotatef(rotation, 0, 1, 0);
-			glScalef(0.3, 0.3, 0.3);
-			glColor3f(0.1f, 0.9f, 1.0f);
-			gluSphere(gluNewQuadric(), 0.20, 20, 20);
-	
-			glPushMatrix(); // REMEMBER WHERE WE ARE
-				// Render a moon around planet 2
-				glRotatef((rotation*2*2.0), 0, 1, 0);
-				glTranslatef(1, 0, 0);
-				glScalef(0.3, 0.3, 0.3);
-				glColor3f(0.8f, 0.8f, 0.8f);
-				gluSphere(gluNewQuadric(), 0.20, 20, 20);
+		glNormal3f(0.0f, 0.0f, 1.0f);
+		glTexCoord2f(0.0f, 0.0f);
+		glVertex3f(-1.0f, 1.0f, 1.0f);
 
-				glPushMatrix(); // REMEMBER WHERE WE ARE
-								// Render a moon around planet 2's moon
-				glRotatef((rotation * 2 * 2.0), 0, 1, 0);
-				glTranslatef(1, 0, 0);
-				glScalef(0.3, 0.3, 0.3);
-				glColor3f(0.8f, 0.8f, 0.8f);
-				gluSphere(gluNewQuadric(), 0.20, 20, 20);
-				glPopMatrix();
+		glNormal3f(0.0f, 0.0f, 1.0f);
+		glTexCoord2f(0.0f, 1.0f);
+		glVertex3f(-1.0f, -1.0f, 1.0f);
 
-			glPopMatrix();
+		glNormal3f(0.0f, 0.0f, 1.0f);
+		glTexCoord2f(1.0f, 1.0f);
+		glVertex3f(1.0f, -1.0f, 1.0f);
 
-		glPopMatrix();//GO BACK TO SUN
+		glNormal3f(0.0f, 0.0f, 1.0f);
+		glTexCoord2f(1.0f, 0.0f);
+		glVertex3f(1.0f, 1.0f, 1.0f);
 
-		glPushMatrix();//render planet 3
-			glRotatef(-rotation * 0.7, 0, 1, 0);
-			glTranslatef(3, 0, 0);
-			glRotatef(rotation, 0, 1, 0);
-			glScalef(0.7, 0.7, 0.7);
-			glColor3f(0.9f, 0.3f, 0.1f);
-			gluSphere(gluNewQuadric(), 0.20, 20, 20);
+	glEnd(); //end drawing
 
-			glPushMatrix(); // REMEMBER WHERE WE ARE
-							// Render a moon around planet 3
-				glRotatef((rotation * 2 * 2.0), 0, 1, 0);
-				glTranslatef(1, 0, 0);
-				glScalef(0.3, 0.3, 0.3);
-				glColor3f(0.8f, 0.8f, 0.8f);
-				gluSphere(gluNewQuadric(), 0.20, 20, 20);
-			glPopMatrix();
+	//Right face
+	glBegin(GL_QUADS); //Begin drawing state
 
-			glPushMatrix(); // REMEMBER WHERE WE ARE
-							// Render another moon around planet 3
-			glRotatef((rotation * 2 * 2.0), 0, 0, 1);
-			glTranslatef(-1, 0, 0);
-			glScalef(0.3, 0.3, 0.3);
-			glColor3f(0.8f, 0.8f, 0.8f);
-			gluSphere(gluNewQuadric(), 0.20, 20, 20);
-			glPopMatrix();
+		glColor3f(1.0f, 0.0f, 0.0f);
 
-		glPopMatrix();//GO BACK TO SUN
-	glPopMatrix();
-	
-	// Notice the indentation, this helps keep track of all the pushes and pops
-	
-	/*glTranslatef(-2.0, 1.0, 0.0);*/
-	//glScalef(2, 0.5, 0);
+		glNormal3f(0.0f, 0.0f, 1.0f);
+		glTexCoord2f(0.0f, 0.0f);
+		glVertex3f(1.0f, 1.0f, 1.0f);
 
-	/*if (input->isKeyDown('o'))
+		glNormal3f(0.0f, 0.0f, 1.0f);
+		glTexCoord2f(0.0f, 1.0f);
+		glVertex3f(1.0f, -1.0f, 1.0f);
+
+		glNormal3f(0.0f, 0.0f, 1.0f);
+		glTexCoord2f(1.0f, 1.0f);
+		glVertex3f(1.0f, -1.0f, -1.0f);
+
+		glNormal3f(0.0f, 0.0f, 1.0f);
+		glTexCoord2f(1.0f, 0.0f);
+		glVertex3f(1.0f, 1.0f, -1.0f);
+
+	glEnd(); //end drawing
+
+	//Left face
+	glBegin(GL_QUADS); //Begin drawing state
+
+		glColor3f(1.0f, 0.5f, 0.0f);
+
+		glNormal3f(0.0f, 0.0f, 1.0f);
+		glTexCoord2f(0.0f, 0.0f);
+		glVertex3f(-1.0f, 1.0f, 1.0f);
+
+		glNormal3f(0.0f, 0.0f, 1.0f);
+		glTexCoord2f(0.0f, 1.0f);
+		glVertex3f(-1.0f, -1.0f, 1.0f);
+
+		glNormal3f(0.0f, 0.0f, 1.0f);
+		glTexCoord2f(1.0f, 1.0f);
+		glVertex3f(-1.0f, -1.0f, -1.0f);
+
+		glNormal3f(0.0f, 0.0f, 1.0f);
+		glTexCoord2f(1.0f, 0.0f);
+		glVertex3f(-1.0f, 1.0f, -1.0f);
+
+	glEnd(); //end drawing
+
+	//Top face
+	glBegin(GL_QUADS); //Begin drawing state
+
+		glColor3f(0.0f, 0.0f, 1.0f);
+
+		glNormal3f(0.0f, 0.0f, 1.0f);
+		glTexCoord2f(0.0f, 0.0f);
+		glVertex3f(-1.0f, 1.0f, -1.0f);
+
+		glNormal3f(0.0f, 0.0f, 1.0f);
+		glTexCoord2f(0.0f, 1.0f);
+		glVertex3f(-1.0f, 1.0f, 1.0f);
+
+		glNormal3f(0.0f, 0.0f, 1.0f);
+		glTexCoord2f(1.0f, 1.0f);
+		glVertex3f(1.0f, 1.0f, 1.0f);
+
+		glNormal3f(0.0f, 0.0f, 1.0f);
+		glTexCoord2f(1.0f, 0.0f);
+		glVertex3f(1.0f, 1.0f, -1.0f);
+
+	glEnd(); //end drawing
+
+	//Bottom face
+	glBegin(GL_QUADS); //Begin drawing state
+
+		glColor3f(0.0f, 1.0f, 0.0f);
+
+		glNormal3f(0.0f, 0.0f, 1.0f);
+		glTexCoord2f(0.0f, 0.0f);
+		glVertex3f(-1.0f, -1.0f, -1.0f);
+
+		glNormal3f(0.0f, 0.0f, 1.0f);
+		glTexCoord2f(0.0f, 1.0f);
+		glVertex3f(-1.0f, -1.0f, 1.0f);
+
+		glNormal3f(0.0f, 0.0f, 1.0f);
+		glTexCoord2f(1.0f, 1.0f);
+		glVertex3f(1.0f, -1.0f, 1.0f);
+
+		glNormal3f(0.0f, 0.0f, 1.0f);
+		glTexCoord2f(1.0f, 0.0f);
+		glVertex3f(1.0f, -1.0f, -1.0f);
+
+	glEnd(); //end drawing
+
+	//Back face
+	glBegin(GL_QUADS); //Begin drawing state
+
+		glColor3f(1.0f, 1.0f, 0.0f);
+
+		glNormal3f(0.0f, 0.0f, 1.0f);
+		glTexCoord2f(0.0f, 0.0f);
+		glVertex3f(-1.0f, 1.0f, -1.0f);
+
+		glNormal3f(0.0f, 0.0f, 1.0f);
+		glTexCoord2f(0.0f, 1.0f);
+		glVertex3f(-1.0f, -1.0f, -1.0f);
+
+		glNormal3f(0.0f, 0.0f, 1.0f);
+		glTexCoord2f(1.0f, 1.0f);
+		glVertex3f(1.0f, -1.0f, -1.0f);
+
+		glNormal3f(0.0f, 0.0f, 1.0f);
+		glTexCoord2f(1.0f, 0.0f);
+		glVertex3f(1.0f, 1.0f, -1.0f);
+
+	glEnd(); //end drawing
+
+	glRotatef(-rotation, 1, 1, 0);
+
+	//rotate the objects drawn after
+	//glRotatef(25, 1.0f, 0.0f, 0.0f);
+
+	//Render plane
+	for (double i = -10; i < 10; i += 1)
 	{
-		glRotatef(45, 0, 1, 0);
+		for (double j = -10; j < 10; j += 1)
+		{
+			renderPlane(i, 0.0f, j);
+		}
 	}
-	else if (input->isKeyDown('p'))
-	{
-		glRotatef(-60, 0, 1, 0);
-	}*/
 
-	/*rotation -= 5.0f;*/
-
-	/*glTranslatef(2, 0, 0);
-	glScalef(1, 1, 1);
-	glRotatef(rotation, 0, 0, 1);*/
-	
-	/*glRotatef(rotation, 0, 0, 1);
-	glScalef(1, 1, 1);
-	glTranslatef(1, 0, 0);*/
-	
-	/*glBegin(GL_TRIANGLES);
-
-	glColor3f(1.0, 0.0, 0.0);
-
-	glVertex3f(0.0, 1.0, 0.0);
-	glVertex3f(-1.0, 0.0, 0.0);
-	glVertex3f(1.0, 0.0, 0.0);
-
-	glEnd();*/
-
-	/*glClear;*/
-
-	/*glRotatef(rotation, 0, 0, 1);
-	glScalef(0.5, 0.5, 0.5);
-	glTranslatef(3, 0, 0);*/
-
-	/*glBegin(GL_TRIANGLES);
-
-	glColor3f(0.0, 0.0, 1.0);
-
-	glVertex3f(0.0, 1.0, 0.0);
-	glVertex3f(-1.0, 0.0, 0.0);
-	glVertex3f(1.0, 0.0, 0.0);
-
-	glEnd();*/
-
-	glColor3f(1.0f, 1.0f, 1.0f);
+	//glRotatef(-25, 1.0f, 0.0f, 0.0f);
 
 	// End render geometry --------------------------------------
 
@@ -273,4 +430,28 @@ void Scene::displayText(float x, float y, float r, float g, float b, char* strin
 	glLoadIdentity();
 	gluPerspective(fov, ((float)width/(float)height), nearPlane, farPlane);
 	glMatrixMode(GL_MODELVIEW);
+}
+
+void Scene::renderPlane(double x, double y, double z)
+{
+	glBegin(GL_QUADS);
+
+	//glColor3f(0.0f, 1.0f, 0.0f);
+	//set normal
+	glNormal3f(0.0f, 1.0f, 0.0f);
+	//draw plane
+	glTexCoord2f(x, y);
+	glVertex3f(x, y, z - 1);
+
+	glTexCoord2f(x + 1, y);
+	glVertex3f(x, y, z);
+
+	glTexCoord2f(x + 1, y + 1);
+	glVertex3f(x + 1, y, z);
+
+	glTexCoord2f(x, y + 1);
+	glVertex3f(x + 1, y, z - 1);
+
+
+	glEnd();
 }

@@ -15,6 +15,9 @@
 // Further includes should go here:
 #include "SOIL.h"
 #include <vector>
+#include "MyCamera.h"
+#include <iostream>
+#include <conio.h>
 
 
 class Scene{
@@ -29,6 +32,8 @@ public:
 	void update(float dt);
 	// Resizes the OpenGL output based on new window size.
 	void resize(int w, int h);
+
+	void renderPlane(double x, double y, double z);
 
 protected:
 	// Renders text (x, y positions, RGB colour of text, string of text to be rendered)
@@ -54,6 +59,19 @@ protected:
 
 	//My variables
 	float rotation = 0.0f;
+	//GLfloat shininess[] = { 50 };
+	float shiny = 50.0f;
+
+	//Camera
+	MyCamera camera;
+
+	GLuint myTexture;
+	GLuint Omnitrix;
+	GLuint triangle;
+	GLuint rubiks;
+	GLuint checks;
+
+	GLint polygonMode;
 };
 
 #endif
