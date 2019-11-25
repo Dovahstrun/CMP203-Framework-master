@@ -34,6 +34,7 @@ public:
 	void resize(int w, int h);
 
 	void renderPlane(double x, double y, double z);
+	void renderCube();
 
 protected:
 	// Renders text (x, y positions, RGB colour of text, string of text to be rendered)
@@ -70,6 +71,7 @@ protected:
 	GLuint triangle;
 	GLuint rubiks;
 	GLuint checks;
+	GLuint grass;
 
 	GLint polygonMode;
 };

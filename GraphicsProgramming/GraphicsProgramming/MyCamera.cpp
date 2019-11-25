@@ -96,16 +96,12 @@ void MyCamera::moveRight(float dt)
 
 void MyCamera::moveUp(float dt)
 {
-	position.x += up.x / 10;
 	position.y += up.y / 10;
-	position.z += up.z / 10;
 }
 
 void MyCamera::moveDown(float dt)
 {
-	position.x -= up.x / 10;
 	position.y -= up.y / 10;
-	position.z -= up.z / 10;
 }
 
 void MyCamera::rotateLeft()

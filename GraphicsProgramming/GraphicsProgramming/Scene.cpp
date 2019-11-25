@@ -9,7 +9,7 @@ Scene::Scene(Input *in)
 		
 	//OpenGL settings
 	glShadeModel(GL_SMOOTH);							// Enable Smooth Shading
-	glClearColor(0.0f, 0.0f, 1.0f, 1.0f);				// Black Background
+	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);				// Black Background
 	glClearDepth(1.0f);									// Depth Buffer Setup
 	glClearStencil(0);									// Clear stencil buffer
 	glEnable(GL_DEPTH_TEST);							// Enables Depth Testing
@@ -74,6 +74,14 @@ Scene::Scene(Input *in)
 		SOIL_CREATE_NEW_ID,
 		SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT
 	);
+
+	grass = SOIL_load_OGL_texture
+	(
+		"gfx/grass.png",
+		SOIL_LOAD_AUTO,
+		SOIL_CREATE_NEW_ID,
+		SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT
+	);
 }
 
 
@@ -129,28 +137,29 @@ void Scene::handleInput(float dt)
 		camera.moveRight(dt);//Right
 	}
 
-
+	//Rotation
 	if (input->isKeyDown('o'))
 	{
-		camera.rotateLeft();
+		camera.rotateLeft();//Rotate left
 	}
 	if (input->isKeyDown('p'))
 	{
-		camera.rotateRight();
+		camera.rotateRight();//Rotate right
 	}
 
-	if (input->getMouseX() != 0.0f)
+
+	//Mouse rotation
+	if (input->getMouseX() != 0.0f) //If mouse isn't in the centre
 	{
-		float xDistance = input->getMouseX() - width / 2;
-		camera.rotateYaw(xDistance, dt);
+		float xDistance = input->getMouseX() - width / 2; //Figure out how far (X) the mouse is from the centre
+		camera.rotateYaw(xDistance, dt);//Turn camera by that distance horizontally
 	}
-	if (input->getMouseY() != 0.0f)
+	if (input->getMouseY() != 0.0f) //If mouse isn't in the centre
 	{
-		float yDistance = input->getMouseY() - height / 2;
-		camera.rotatePitch(yDistance, dt);
-		input->setMouseY(height / 2);
+		float yDistance = input->getMouseY() - height / 2;//Figure out how far (Y) the mouse is from the centre
+		camera.rotatePitch(yDistance, dt);//turn camera by that distance vertically
 	}
-	glutWarpPointer(width/2, height/2);
+	glutWarpPointer(width/2, height/2); //Set mouse to centre
 	
 }
 
@@ -178,154 +187,25 @@ void Scene::render() {
 	
 	// Render geometry/scene here -------------------------------------
 
-	rotation += 0.2f;
+
+	///WEEK 5 RUBIKS CUBE
+
+	glDisable(GL_DEPTH_TEST);
+	rotation += 0.4f;
 	glBindTexture(GL_TEXTURE_2D, rubiks);
-	glRotatef(rotation, 1, 1, 0);
+	glRotatef(rotation, 0, 1, 0);
 
-	//Front face
-	glBegin(GL_QUADS); //Begin drawing state
+	renderCube();
 
-		glColor3f(1.0f, 1.0f, 1.0f);
-
-		glNormal3f(0.0f, 0.0f, 1.0f);
-		glTexCoord2f(0.0f, 0.0f);
-		glVertex3f(-1.0f, 1.0f, 1.0f);
-
-		glNormal3f(0.0f, 0.0f, 1.0f);
-		glTexCoord2f(0.0f, 1.0f);
-		glVertex3f(-1.0f, -1.0f, 1.0f);
-
-		glNormal3f(0.0f, 0.0f, 1.0f);
-		glTexCoord2f(1.0f, 1.0f);
-		glVertex3f(1.0f, -1.0f, 1.0f);
-
-		glNormal3f(0.0f, 0.0f, 1.0f);
-		glTexCoord2f(1.0f, 0.0f);
-		glVertex3f(1.0f, 1.0f, 1.0f);
-
-	glEnd(); //end drawing
-
-	//Right face
-	glBegin(GL_QUADS); //Begin drawing state
-
-		glColor3f(1.0f, 0.0f, 0.0f);
-
-		glNormal3f(0.0f, 0.0f, 1.0f);
-		glTexCoord2f(0.0f, 0.0f);
-		glVertex3f(1.0f, 1.0f, 1.0f);
-
-		glNormal3f(0.0f, 0.0f, 1.0f);
-		glTexCoord2f(0.0f, 1.0f);
-		glVertex3f(1.0f, -1.0f, 1.0f);
-
-		glNormal3f(0.0f, 0.0f, 1.0f);
-		glTexCoord2f(1.0f, 1.0f);
-		glVertex3f(1.0f, -1.0f, -1.0f);
-
-		glNormal3f(0.0f, 0.0f, 1.0f);
-		glTexCoord2f(1.0f, 0.0f);
-		glVertex3f(1.0f, 1.0f, -1.0f);
-
-	glEnd(); //end drawing
-
-	//Left face
-	glBegin(GL_QUADS); //Begin drawing state
-
-		glColor3f(1.0f, 0.5f, 0.0f);
-
-		glNormal3f(0.0f, 0.0f, 1.0f);
-		glTexCoord2f(0.0f, 0.0f);
-		glVertex3f(-1.0f, 1.0f, 1.0f);
-
-		glNormal3f(0.0f, 0.0f, 1.0f);
-		glTexCoord2f(0.0f, 1.0f);
-		glVertex3f(-1.0f, -1.0f, 1.0f);
-
-		glNormal3f(0.0f, 0.0f, 1.0f);
-		glTexCoord2f(1.0f, 1.0f);
-		glVertex3f(-1.0f, -1.0f, -1.0f);
-
-		glNormal3f(0.0f, 0.0f, 1.0f);
-		glTexCoord2f(1.0f, 0.0f);
-		glVertex3f(-1.0f, 1.0f, -1.0f);
-
-	glEnd(); //end drawing
-
-	//Top face
-	glBegin(GL_QUADS); //Begin drawing state
-
-		glColor3f(0.0f, 0.0f, 1.0f);
-
-		glNormal3f(0.0f, 0.0f, 1.0f);
-		glTexCoord2f(0.0f, 0.0f);
-		glVertex3f(-1.0f, 1.0f, -1.0f);
-
-		glNormal3f(0.0f, 0.0f, 1.0f);
-		glTexCoord2f(0.0f, 1.0f);
-		glVertex3f(-1.0f, 1.0f, 1.0f);
-
-		glNormal3f(0.0f, 0.0f, 1.0f);
-		glTexCoord2f(1.0f, 1.0f);
-		glVertex3f(1.0f, 1.0f, 1.0f);
-
-		glNormal3f(0.0f, 0.0f, 1.0f);
-		glTexCoord2f(1.0f, 0.0f);
-		glVertex3f(1.0f, 1.0f, -1.0f);
-
-	glEnd(); //end drawing
-
-	//Bottom face
-	glBegin(GL_QUADS); //Begin drawing state
-
-		glColor3f(0.0f, 1.0f, 0.0f);
-
-		glNormal3f(0.0f, 0.0f, 1.0f);
-		glTexCoord2f(0.0f, 0.0f);
-		glVertex3f(-1.0f, -1.0f, -1.0f);
-
-		glNormal3f(0.0f, 0.0f, 1.0f);
-		glTexCoord2f(0.0f, 1.0f);
-		glVertex3f(-1.0f, -1.0f, 1.0f);
-
-		glNormal3f(0.0f, 0.0f, 1.0f);
-		glTexCoord2f(1.0f, 1.0f);
-		glVertex3f(1.0f, -1.0f, 1.0f);
-
-		glNormal3f(0.0f, 0.0f, 1.0f);
-		glTexCoord2f(1.0f, 0.0f);
-		glVertex3f(1.0f, -1.0f, -1.0f);
-
-	glEnd(); //end drawing
-
-	//Back face
-	glBegin(GL_QUADS); //Begin drawing state
-
-		glColor3f(1.0f, 1.0f, 0.0f);
-
-		glNormal3f(0.0f, 0.0f, 1.0f);
-		glTexCoord2f(0.0f, 0.0f);
-		glVertex3f(-1.0f, 1.0f, -1.0f);
-
-		glNormal3f(0.0f, 0.0f, 1.0f);
-		glTexCoord2f(0.0f, 1.0f);
-		glVertex3f(-1.0f, -1.0f, -1.0f);
-
-		glNormal3f(0.0f, 0.0f, 1.0f);
-		glTexCoord2f(1.0f, 1.0f);
-		glVertex3f(1.0f, -1.0f, -1.0f);
-
-		glNormal3f(0.0f, 0.0f, 1.0f);
-		glTexCoord2f(1.0f, 0.0f);
-		glVertex3f(1.0f, 1.0f, -1.0f);
-
-	glEnd(); //end drawing
-
-	glRotatef(-rotation, 1, 1, 0);
-
-	//rotate the objects drawn after
-	//glRotatef(25, 1.0f, 0.0f, 0.0f);
+	glRotatef(-rotation, 0, 1, 0);
+	
+	glEnable(GL_DEPTH_TEST);
 
 	//Render plane
+	glBindTexture(GL_TEXTURE_2D, grass);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTranslatef(0.0f, -10.0f, 0.0f);
 	for (double i = -10; i < 10; i += 1)
 	{
 		for (double j = -10; j < 10; j += 1)
@@ -333,8 +213,28 @@ void Scene::render() {
 			renderPlane(i, 0.0f, j);
 		}
 	}
+	glTranslatef(0.0f, 10.0f, 0.0f);
 
-	//glRotatef(-25, 1.0f, 0.0f, 0.0f);
+	//Triangles
+	/*glBegin(GL_TRIANGLES);
+			
+		glColor3f(1.0f, 0.0f, 0.0f);
+		glVertex3f(0.0f, 1.0f, 0.0f);
+		glVertex3f(1.0f, -1.0f, 0.0f);
+		glVertex3f(-1.0f, -1.0f, 0.0f);
+
+	glEnd();
+
+	glRotatef(30, 0, 0, 1);
+	glBegin(GL_TRIANGLES);
+
+		glColor3f(0.0f, 1.0f, 0.0f);
+		glVertex3f(0.0f, 1.0f, -0.5f);
+		glVertex3f(1.0f, -1.0f, -0.5f);
+		glVertex3f(-1.0f, -1.0f, -0.5f);
+
+	glEnd();*/
+
 
 	// End render geometry --------------------------------------
 
@@ -454,4 +354,145 @@ void Scene::renderPlane(double x, double y, double z)
 
 
 	glEnd();
+}
+
+void Scene::renderCube()
+{
+	//Front face
+	glBegin(GL_QUADS); //Begin drawing state
+
+	glColor3f(1.0f, 1.0f, 1.0f);
+
+	glNormal3f(0.0f, 0.0f, 1.0f);
+	glTexCoord2f(0.0f, 0.0f);
+	glVertex3f(-1.0f, 1.0f, 1.0f);
+
+	glNormal3f(0.0f, 0.0f, 1.0f);
+	glTexCoord2f(0.0f, 1.0f);
+	glVertex3f(-1.0f, -1.0f, 1.0f);
+
+	glNormal3f(0.0f, 0.0f, 1.0f);
+	glTexCoord2f(1.0f, 1.0f);
+	glVertex3f(1.0f, -1.0f, 1.0f);
+
+	glNormal3f(0.0f, 0.0f, 1.0f);
+	glTexCoord2f(1.0f, 0.0f);
+	glVertex3f(1.0f, 1.0f, 1.0f);
+
+	glEnd(); //end drawing
+
+	//Right face
+	glBegin(GL_QUADS); //Begin drawing state
+
+	glColor3f(1.0f, 0.0f, 0.0f);
+
+	glNormal3f(0.0f, 0.0f, 1.0f);
+	glTexCoord2f(0.0f, 0.0f);
+	glVertex3f(1.0f, 1.0f, 1.0f);
+
+	glNormal3f(0.0f, 0.0f, 1.0f);
+	glTexCoord2f(0.0f, 1.0f);
+	glVertex3f(1.0f, -1.0f, 1.0f);
+
+	glNormal3f(0.0f, 0.0f, 1.0f);
+	glTexCoord2f(1.0f, 1.0f);
+	glVertex3f(1.0f, -1.0f, -1.0f);
+
+	glNormal3f(0.0f, 0.0f, 1.0f);
+	glTexCoord2f(1.0f, 0.0f);
+	glVertex3f(1.0f, 1.0f, -1.0f);
+
+	glEnd(); //end drawing
+
+	//Left face
+	glBegin(GL_QUADS); //Begin drawing state
+
+	glColor3f(1.0f, 0.5f, 0.0f);
+
+	glNormal3f(0.0f, 0.0f, 1.0f);
+	glTexCoord2f(0.0f, 0.0f);
+	glVertex3f(-1.0f, 1.0f, 1.0f);
+
+	glNormal3f(0.0f, 0.0f, 1.0f);
+	glTexCoord2f(0.0f, 1.0f);
+	glVertex3f(-1.0f, -1.0f, 1.0f);
+
+	glNormal3f(0.0f, 0.0f, 1.0f);
+	glTexCoord2f(1.0f, 1.0f);
+	glVertex3f(-1.0f, -1.0f, -1.0f);
+
+	glNormal3f(0.0f, 0.0f, 1.0f);
+	glTexCoord2f(1.0f, 0.0f);
+	glVertex3f(-1.0f, 1.0f, -1.0f);
+
+	glEnd(); //end drawing
+
+	//Top face
+	glBegin(GL_QUADS); //Begin drawing state
+
+	glColor3f(0.0f, 0.0f, 1.0f);
+
+	glNormal3f(0.0f, 0.0f, 1.0f);
+	glTexCoord2f(0.0f, 0.0f);
+	glVertex3f(-1.0f, 1.0f, -1.0f);
+
+	glNormal3f(0.0f, 0.0f, 1.0f);
+	glTexCoord2f(0.0f, 1.0f);
+	glVertex3f(-1.0f, 1.0f, 1.0f);
+
+	glNormal3f(0.0f, 0.0f, 1.0f);
+	glTexCoord2f(1.0f, 1.0f);
+	glVertex3f(1.0f, 1.0f, 1.0f);
+
+	glNormal3f(0.0f, 0.0f, 1.0f);
+	glTexCoord2f(1.0f, 0.0f);
+	glVertex3f(1.0f, 1.0f, -1.0f);
+
+	glEnd(); //end drawing
+
+	//Bottom face
+	glBegin(GL_QUADS); //Begin drawing state
+
+	glColor3f(0.0f, 1.0f, 0.0f);
+
+	glNormal3f(0.0f, 0.0f, 1.0f);
+	glTexCoord2f(0.0f, 0.0f);
+	glVertex3f(-1.0f, -1.0f, -1.0f);
+
+	glNormal3f(0.0f, 0.0f, 1.0f);
+	glTexCoord2f(0.0f, 1.0f);
+	glVertex3f(-1.0f, -1.0f, 1.0f);
+
+	glNormal3f(0.0f, 0.0f, 1.0f);
+	glTexCoord2f(1.0f, 1.0f);
+	glVertex3f(1.0f, -1.0f, 1.0f);
+
+	glNormal3f(0.0f, 0.0f, 1.0f);
+	glTexCoord2f(1.0f, 0.0f);
+	glVertex3f(1.0f, -1.0f, -1.0f);
+
+	glEnd(); //end drawing
+
+	//Back face
+	glBegin(GL_QUADS); //Begin drawing state
+
+	glColor3f(1.0f, 1.0f, 0.0f);
+
+	glNormal3f(0.0f, 0.0f, 1.0f);
+	glTexCoord2f(0.0f, 0.0f);
+	glVertex3f(-1.0f, 1.0f, -1.0f);
+
+	glNormal3f(0.0f, 0.0f, 1.0f);
+	glTexCoord2f(0.0f, 1.0f);
+	glVertex3f(-1.0f, -1.0f, -1.0f);
+
+	glNormal3f(0.0f, 0.0f, 1.0f);
+	glTexCoord2f(1.0f, 1.0f);
+	glVertex3f(1.0f, -1.0f, -1.0f);
+
+	glNormal3f(0.0f, 0.0f, 1.0f);
+	glTexCoord2f(1.0f, 0.0f);
+	glVertex3f(1.0f, 1.0f, -1.0f);
+
+	glEnd(); //end drawing
 }
