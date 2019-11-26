@@ -35,6 +35,9 @@ public:
 
 	void renderPlane(double x, double y, double z);
 	void renderCube();
+	void renderSkyBox();
+	void renderBox();
+	void renderQuad(Vector3 startVertex, double xLength, double yLength, double zLength);
 
 protected:
 	// Renders text (x, y positions, RGB colour of text, string of text to be rendered)
@@ -72,6 +75,9 @@ protected:
 	GLuint rubiks;
 	GLuint checks;
 	GLuint grass;
+	GLuint tpchecks;
+	GLuint tpcrate;
+	GLuint sky;
 
 	GLint polygonMode;
 };
