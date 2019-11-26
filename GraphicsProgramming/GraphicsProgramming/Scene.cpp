@@ -542,7 +542,7 @@ void Scene::renderSkyBox()
 {
 	glPushMatrix();
 		glBindTexture(GL_TEXTURE_2D, sky);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);//This removes one of the seams
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 		glTranslatef(camera.getPosition().x, camera.getPosition().y, camera.getPosition().z);
 		glColor3f(1.0f, 1.0f, 1.0f);
@@ -600,6 +600,7 @@ void Scene::renderBox()
 	//Left face
 	glBegin(GL_QUADS); //Begin drawing state
 
+		//Inverted texture coords. Either the vertexes or tcoords has to be inverted so the texture wraps correctly
 		glNormal3f(0.0f, 0.0f, 1.0f);
 		glTexCoord2f(1.0f, 0.25f);
 		glVertex3f(-1.0f, 1.0f, 1.0f);
@@ -622,11 +623,11 @@ void Scene::renderBox()
 	glBegin(GL_QUADS); //Begin drawing state
 
 		glNormal3f(0.0f, 0.0f, 1.0f);
-		glTexCoord2f(0.5f, 0.001f);
+		glTexCoord2f(0.5f, 0.001f); //Odd textCoord.y so that there isn't a seam
 		glVertex3f(-1.0f, 1.0f, -1.0f);
 
 		glNormal3f(0.0f, 0.0f, 1.0f);
-		glTexCoord2f(0.25f, 0.001f);
+		glTexCoord2f(0.25f, 0.001f);//Odd textCoord.y so that there isn't a seam
 		glVertex3f(-1.0f, 1.0f, 1.0f);
 
 		glNormal3f(0.0f, 0.0f, 1.0f);
@@ -663,6 +664,7 @@ void Scene::renderBox()
 	//Back face
 	glBegin(GL_QUADS); //Begin drawing state
 
+		//Inverted texture coords. Either the vertexes or tcoords has to be inverted so the texture wraps correctly
 		glNormal3f(0.0f, 0.0f, 1.0f);
 		glTexCoord2f(0.75f, 0.25f);
 		glVertex3f(-1.0f, 1.0f, -1.0f);
