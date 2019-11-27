@@ -664,7 +664,7 @@ void Scene::renderBox()
 	//Back face
 	glBegin(GL_QUADS); //Begin drawing state
 
-		//Inverted texture coords. Either the vertexes or tcoords has to be inverted so the texture wraps correctlywi
+		//Inverted texture coords. Either the vertexes or tcoords has to be inverted so the texture wraps correctly
 		glNormal3f(0.0f, 0.0f, 1.0f);
 		glTexCoord2f(0.75f, 0.25f);
 		glVertex3f(-1.0f, 1.0f, -1.0f);
