@@ -38,7 +38,7 @@ Scene::Scene(Input *in)
 
 	myTexture = SOIL_load_OGL_texture
 	(
-		"gfx/cratearrow.png",
+		"gfx/crate.png",
 		SOIL_LOAD_AUTO,
 		SOIL_CREATE_NEW_ID,
 		SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT
@@ -211,7 +211,7 @@ void Scene::render() {
 	// Set the camera
 	gluLookAt(camera.getPosition().x, camera.getPosition().y, camera.getPosition().z, camera.getLookAt().x, camera.getLookAt().y, camera.getLookAt().z, camera.getUp().x, camera.getUp().y, camera.getUp().z);
 	
-	//Create skybox
+	//Create skybox (needs to be done first as we disable the depth testing (inside the function))
 	renderSkyBox();
 
 	// Render geometry/scene here -------------------------------------
@@ -226,47 +226,40 @@ void Scene::render() {
 	}
 	//Render plane -------------------------------------
 	
-	///WEEK 5 RUBIKS CUBE
-	rotation += 0.4f;
-	glBindTexture(GL_TEXTURE_2D, rubiks);
-	glRotatef(rotation, 0, 1, 0);
-	renderCube();
-	glRotatef(-rotation, 0, 1, 0);
-	///WEEK 5 RUBIKS CUBE
+	///WEEK 5 RUBIKS CUBE -------------------------------------
+		rotation += 0.4f;
+		glBindTexture(GL_TEXTURE_2D, rubiks);
+		glRotatef(rotation, 0, 1, 0);
+		renderCube();
+		glRotatef(-rotation, 0, 1, 0);
+	///WEEK 5 RUBIKS CUBE -------------------------------------
 
 
-	///WEEK 7
 
-	//Crate
+
+
+	///WEEK 7 -------------------------------------
+
+		//Checkered thing
 	
-	glEnable(GL_BLEND);
-	glBindTexture(GL_TEXTURE_2D, tpchecks);
-	glColor4f(1.0f, 1.0f, 1.0f, 1);
-	renderQuad(Vector3(0.0f, 1.0f, 1.0f), 5.0f, 5.0f, 4.0f);
-	glDisable(GL_BLEND);
+		glEnable(GL_BLEND);
+		glBindTexture(GL_TEXTURE_2D, tpchecks);
+		glColor4f(1.0f, 1.0f, 1.0f, 1);
+		renderQuad(Vector3(0.0f, 1.0f, 1.0f), 5.0f, 5.0f, 4.0f);
+		glDisable(GL_BLEND);
 
-	///WEEK 7
+	///WEEK 7 -------------------------------------
 	
 
-	//Triangles
-	/*glBegin(GL_TRIANGLES);
-			
-		glColor3f(1.0f, 0.0f, 0.0f);
-		glVertex3f(0.0f, 1.0f, 0.0f);
-		glVertex3f(1.0f, -1.0f, 0.0f);
-		glVertex3f(-1.0f, -1.0f, 0.0f);
 
-	glEnd();
 
-	glRotatef(30, 0, 0, 1);
-	glBegin(GL_TRIANGLES);
 
-		glColor3f(0.0f, 1.0f, 0.0f);
-		glVertex3f(0.0f, 1.0f, -0.5f);
-		glVertex3f(1.0f, -1.0f, -0.5f);
-		glVertex3f(-1.0f, -1.0f, -0.5f);
-
-	glEnd();*/
+	///WEEK 8 -------------------------------------
+		
+		glBindTexture(GL_TEXTURE_2D, myTexture);
+		shapes.render1();
+		
+	///WEEK 8 -------------------------------------
 
 
 	// End render geometry --------------------------------------

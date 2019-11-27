@@ -18,6 +18,7 @@
 #include "MyCamera.h"
 #include <iostream>
 #include <conio.h>
+#include <Shape.h>
 
 
 class Scene{
@@ -69,6 +70,7 @@ protected:
 	//Camera
 	MyCamera camera;
 
+	//Textures
 	GLuint myTexture;
 	GLuint Omnitrix;
 	GLuint triangle;
@@ -80,6 +82,10 @@ protected:
 	GLuint sky;
 
 	GLint polygonMode;
+
+	//Shapes
+	Shape shapes;
+	
 };
 
 #endif
