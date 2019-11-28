@@ -96,12 +96,12 @@ void MyCamera::moveRight(float dt)
 
 void MyCamera::moveUp(float dt)
 {
-	position.y += up.y / 10;
+	position.y += 10 * dt;
 }
 
 void MyCamera::moveDown(float dt)
 {
-	position.y -= up.y / 10;
+	position.y -= 10 * dt;
 }
 
 void MyCamera::rotateLeft()
@@ -126,8 +126,8 @@ void MyCamera::rotatePitch(float rotation, float dt)
 	{
 		Pitch = 80.0f;
 	}
-	else if (Pitch < -80)
+	else if (Pitch < -90)
 	{
-		Pitch = -80;
+		Pitch = -90;
 	}
 }
