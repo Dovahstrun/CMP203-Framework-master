@@ -20,6 +20,7 @@
 #include <conio.h>
 #include "Shape.h"
 #include "ProceduralGeneration.h"
+#include "Model.h"
 
 
 class Scene{
@@ -89,6 +90,8 @@ protected:
 	
 	//Procedural Generator
 	ProceduralGeneration generator;
+
+	Model model;
 };
 
 #endif

@@ -243,10 +243,11 @@ void Scene::render() {
 	///WEEK 8 -------------------------------------
 
 		glBindTexture(GL_TEXTURE_2D, myTexture);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 		glColor3f(1.0f, 1.0f, 1.0f);
-		generator.RenderDisk(20);
+		//generator.RenderDisk(20);
+		shapes.render2();
 
 	///WEEK 8 -------------------------------------
 

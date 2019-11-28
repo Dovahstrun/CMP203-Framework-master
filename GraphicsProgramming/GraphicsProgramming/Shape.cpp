@@ -3,21 +3,27 @@
 
 extern float verts[] = {	-1.0, 1.0, 1.0,			// Vertex #0
 							-1.0, -1.0, 1.0,		// Vertex #1
-							1.0,  -1.0, 1.0,		// Vertex #2
-							1.0,  1.0, 1.0,			// Vertex #3
+							1.0, -1.0, 1.0,		// Vertex #2
+							1.0, -1.0, 1.0,			// Vertex #3
+							1.0, 1.0, 1.0,		// Vertex #4
+							-1.0, 1.0, 1.0,			// Vertex #5
 						};
 
 extern float norms[] = { 0.0, 0.0, 1.0,		//0
 						0.0, 0.0, 1.0,		//1
  						0.0, 0.0, 1.0,		//2
 						0.0, 0.0, 1.0,		//3
+						0.0, 0.0, 1.0,		//4
+						0.0, 0.0, 1.0,		//5
 						};		
 
 
 extern float texcoords[]= {	0.0, 0.0, 		//0
 							0.0, 1.0, 		//1
  							1.0, 1.0, 		//2
-							1.0, 0.0, 		//3
+							1.0, 1.0, 		//3
+							1.0, 0.0, 		//4
+							0.0, 0.0, 		//5
 							};
 
 extern GLubyte indices[] = { 0, 1, 2, //front
@@ -133,6 +139,46 @@ extern float cubeverts[] = {	//front
 														1.0,-1.0,-1.0,
 };
 
+extern float tricubeverts[] =
+{
+	-1.0f,-1.0f,-1.0f, // triangle 1 : begin
+	-1.0f,-1.0f, 1.0f,
+	-1.0f, 1.0f, 1.0f, // triangle 1 : end
+	1.0f, 1.0f,-1.0f, // triangle 2 : begin
+	-1.0f,-1.0f,-1.0f,
+	-1.0f, 1.0f,-1.0f, // triangle 2 : end
+	1.0f,-1.0f, 1.0f,
+	-1.0f,-1.0f,-1.0f,
+	1.0f,-1.0f,-1.0f,
+	1.0f, 1.0f,-1.0f,
+	1.0f,-1.0f,-1.0f,
+	-1.0f,-1.0f,-1.0f,
+	-1.0f,-1.0f,-1.0f,
+	-1.0f, 1.0f, 1.0f,
+	-1.0f, 1.0f,-1.0f,
+	1.0f,-1.0f, 1.0f,
+	-1.0f,-1.0f, 1.0f,
+	-1.0f,-1.0f,-1.0f,
+	-1.0f, 1.0f, 1.0f,
+	-1.0f,-1.0f, 1.0f,
+	1.0f,-1.0f, 1.0f,
+	1.0f, 1.0f, 1.0f,
+	1.0f,-1.0f,-1.0f,
+	1.0f, 1.0f,-1.0f,
+	1.0f,-1.0f,-1.0f,
+	1.0f, 1.0f, 1.0f,
+	1.0f,-1.0f, 1.0f,
+	1.0f, 1.0f, 1.0f,
+	1.0f, 1.0f,-1.0f,
+	-1.0f, 1.0f,-1.0f,
+	1.0f, 1.0f, 1.0f,
+	-1.0f, 1.0f,-1.0f,
+	-1.0f, 1.0f, 1.0f,
+	1.0f, 1.0f, 1.0f,
+	-1.0f, 1.0f, 1.0f,
+	1.0f,-1.0f, 1.0f
+};
+
 float CUBE_VERTS[] = {
 	-1.0, -1.0, -1.0, // vertex #0
 	1.0, -1.0, -1.0, // vertex #1
@@ -230,12 +276,12 @@ void Shape::render2()
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
 	//specify data for the arrays
-	glVertexPointer(3, GL_FLOAT, 0, CUBE_VERTS);
-	glNormalPointer(GL_FLOAT, 0, cubenorms);
-	glTexCoordPointer(2, GL_FLOAT, 0, cubetexcoords);
+	glVertexPointer(3, GL_FLOAT, 0, tricubeverts);
+	glNormalPointer(GL_FLOAT, 0, norms);
+	glTexCoordPointer(2, GL_FLOAT, 0, texcoords);
 
 	//dereferencing method of choice = 2
-	glDrawArrays(GL_QUADS, 0, 6);
+	glDrawArrays(GL_TRIANGLES, 0, 36);
 
 	//turn off
 	glDisableClientState(GL_VERTEX_ARRAY);
@@ -262,7 +308,7 @@ void Shape::render3()
 	glTexCoordPointer(2, GL_FLOAT, 0, cubetexcoords);
 	glIndexPointer(GL_FLOAT, 0, CUBE_INDICES);
 
-	//dereferencing method of choice = 2
+	//dereferencing method of choice = 3
 	glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, CUBE_INDICES);
 
 	//turn off

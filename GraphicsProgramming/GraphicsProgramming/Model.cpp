@@ -28,6 +28,22 @@ void Model::render()
 {
 	// TODO: Need to add code here to render the loaded model
 	// How this is done is based on how you stored and sorted the data
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glEnableClientState(GL_NORMAL_ARRAY);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+
+	//specify data for the arrays
+	glVertexPointer(3, GL_FLOAT, 0, vertex.data);
+	glNormalPointer(GL_FLOAT, 0, normals.data);
+	glTexCoordPointer(2, GL_FLOAT, 0, texCoords.data);
+
+	//dereferencing method of choice = 2
+	glDrawArrays(GL_TRIANGLES, 0, m_vertexCount / 3);
+
+	//turn off
+	glDisableClientState(GL_VERTEX_ARRAY);
+	glDisableClientState(GL_NORMAL_ARRAY);
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 }
 
 
@@ -99,7 +115,26 @@ bool Model::loadModel(char* filename)
 	// "Unroll" the loaded obj information into a list of triangles.
 	// TODO: By this point all model has been read from the file, but is not in the correct order.
 	// You NEED to loop over all the data and sort it into a render ready order/format.
-	
+	for (int i = 0; i < faces.size(); ++i)
+	{
+		vertex[i] = verts[i].x;
+		vertex[i + 1] = verts[i].y;
+		vertex[i + 2] = verts[i].z;
+		m_vertexCount += 1;
+
+		++i;
+
+		texCoords[i] = texCs[i].x;
+		texCoords[i + 1] = texCs[i].y;
+
+		++i;
+
+		normals[i] = norms[i].x;
+		normals[i + 1] = norms[i].y;
+		normals[i + 2] = norms[i].z;
+
+		++i;
+	}
 	
 	
 	// Once data has been sorted clear read data (which has been copied and are not longer needed).
