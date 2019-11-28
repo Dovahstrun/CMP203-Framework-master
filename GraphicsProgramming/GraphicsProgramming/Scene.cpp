@@ -229,10 +229,27 @@ void Scene::render() {
 	///WEEK 5 RUBIKS CUBE -------------------------------------
 		rotation += 0.4f;
 		glBindTexture(GL_TEXTURE_2D, rubiks);
+		glTranslatef(5.0f, -2.0f, -3.0f);
 		glRotatef(rotation, 0, 1, 0);
 		renderCube();
 		glRotatef(-rotation, 0, 1, 0);
+		glTranslatef(-5.0f, 2.0f, 3.0f);
 	///WEEK 5 RUBIKS CUBE -------------------------------------
+
+
+
+
+
+	///WEEK 8 -------------------------------------
+
+		glBindTexture(GL_TEXTURE_2D, myTexture);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		glColor3f(1.0f, 1.0f, 1.0f);
+		generator.RenderSphere(20);
+
+	///WEEK 8 -------------------------------------
+
 
 
 
@@ -251,15 +268,6 @@ void Scene::render() {
 	///WEEK 7 -------------------------------------
 	
 
-
-
-
-	///WEEK 8 -------------------------------------
-		
-		glBindTexture(GL_TEXTURE_2D, myTexture);
-		shapes.render1();
-		
-	///WEEK 8 -------------------------------------
 
 
 	// End render geometry --------------------------------------

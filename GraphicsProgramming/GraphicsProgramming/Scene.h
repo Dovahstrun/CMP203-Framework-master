@@ -18,7 +18,8 @@
 #include "MyCamera.h"
 #include <iostream>
 #include <conio.h>
-#include <Shape.h>
+#include "Shape.h"
+#include "ProceduralGeneration.h"
 
 
 class Scene{
@@ -86,6 +87,8 @@ protected:
 	//Shapes
 	Shape shapes;
 	
+	//Procedural Generator
+	ProceduralGeneration generator;
 };
 
 #endif
