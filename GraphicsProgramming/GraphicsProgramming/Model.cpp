@@ -33,9 +33,9 @@ void Model::render()
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
 	//specify data for the arrays
-	glVertexPointer(3, GL_FLOAT, 0, vertex.data);
-	glNormalPointer(GL_FLOAT, 0, normals.data);
-	glTexCoordPointer(2, GL_FLOAT, 0, texCoords.data);
+	glVertexPointer(3, GL_FLOAT, 0, vertex.data());
+	glNormalPointer(GL_FLOAT, 0, normals.data());
+	glTexCoordPointer(2, GL_FLOAT, 0, texCoords.data());
 
 	//dereferencing method of choice = 2
 	glDrawArrays(GL_TRIANGLES, 0, m_vertexCount / 3);
