@@ -115,8 +115,34 @@ Scene::Scene(Input *in)
 		SOIL_CREATE_NEW_ID,
 		SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT | SOIL_FLAG_INVERT_Y
 	);
+
+	suicuneTex = SOIL_load_OGL_texture
+	(
+		"models/Suicune/BodyB1_0",
+		SOIL_LOAD_AUTO,
+		SOIL_CREATE_NEW_ID,
+		SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT
+	);
+
+	enteiTex = SOIL_load_OGL_texture
+	(
+		"models/Entei/images/pm0244_00_BodyA1",
+		SOIL_LOAD_AUTO,
+		SOIL_CREATE_NEW_ID,
+		SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT
+	);
+	raikouTex = SOIL_load_OGL_texture
+	(
+		"models/Raikou/images/pm0243_00_BodyA1",
+		SOIL_LOAD_AUTO,
+		SOIL_CREATE_NEW_ID,
+		SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT
+	);
 	model.load("models/Ho-oh.obj", "models/Ho-oh/textures/houou_0_0.png");
 	bell_Tower.load("models/Bell Tower/Japanese Shrine Tower/Bell Tower.obj", "models/Ho-oh/textures/houou_0_0.png");
+	suicune.load("models/suicune.obj", "models/Ho-oh/textures/houou_0_0.png");
+	entei.load("models/entei.obj", "models/Ho-oh/textures/houou_0_0.png");
+	raikou.load("models/raikou.obj", "models/Ho-oh/textures/houou_0_0.png");
 }
 
 
@@ -285,12 +311,14 @@ void Scene::render() {
 
 	///WEEK 9 -------------------------------------
 
+		//BELL TOWER
 		glPushMatrix();
 			glBindTexture(GL_TEXTURE_2D, NULL);
 
 			glTranslatef(-2.0f, -8.0f, -14.0f);
 			bell_Tower.render();
 
+			//HO-OH
 			glPushMatrix();
 
 				glBindTexture(GL_TEXTURE_2D, hooh);
@@ -301,7 +329,40 @@ void Scene::render() {
 				glScalef(0.03f, 0.03f, 0.03f);
 				glColor3f(1.0f, 1.0f, 1.0f);
 
-			model.render();
+				model.render();
+
+			glPopMatrix();
+
+
+			//SUICUNE
+			glPushMatrix();
+				
+				glBindTexture(GL_TEXTURE_2D, suicuneTex);
+				glTranslatef(0.0f, -2.0f, 12.0f);
+				glScalef(0.02f, 0.02f, 0.02f);
+				suicune.render();
+
+			glPopMatrix();
+
+
+			//ENTEI
+			glPushMatrix();
+
+				glBindTexture(GL_TEXTURE_2D, enteiTex);
+				glTranslatef(3.0f, -2.0f, 12.0f);
+				glScalef(0.8f, 0.8f, 0.8f);
+				entei.render();
+
+			glPopMatrix();
+
+
+			//RAIKOU
+			glPushMatrix();
+
+				glBindTexture(GL_TEXTURE_2D, raikouTex);
+				glTranslatef(-3.0f, -2.0f, 12.0f);
+				glScalef(0.8f, 0.8f, 0.8f);
+				raikou.render();
 
 			glPopMatrix();
 

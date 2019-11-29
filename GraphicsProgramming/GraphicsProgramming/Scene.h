@@ -82,6 +82,9 @@ protected:
 	GLuint tpcrate;
 	GLuint sky;
 	GLuint hooh;
+	GLuint suicuneTex;
+	GLuint enteiTex;
+	GLuint raikouTex;
 
 	GLint polygonMode;
 
@@ -93,6 +96,9 @@ protected:
 
 	Model model;
 	Model bell_Tower;
+	Model suicune;
+	Model entei;
+	Model raikou;
 };
 
 #endif
