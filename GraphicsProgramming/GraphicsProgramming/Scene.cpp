@@ -110,14 +110,13 @@ Scene::Scene(Input *in)
 
 	hooh = SOIL_load_OGL_texture
 	(
-		"gfx/UV Unwrap.png",
+		"models/Ho-oh/textures/houou_0_0.png",
 		SOIL_LOAD_AUTO,
 		SOIL_CREATE_NEW_ID,
-		SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT
+		SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT | SOIL_FLAG_INVERT_Y
 	);
-
-
-	model.load("models/Ho-oh.obj", "gfx/UV Unwrap.png");
+	model.load("models/Ho-oh.obj", "models/Ho-oh/textures/houou_0_0.png");
+	bell_Tower.load("models/Bell Tower/Japanese Shrine Tower/Bell Tower.obj", "models/Ho-oh/textures/houou_0_0.png");
 }
 
 
@@ -286,18 +285,27 @@ void Scene::render() {
 
 	///WEEK 9 -------------------------------------
 
-		glBindTexture(GL_TEXTURE_2D, hooh);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		glPushMatrix();
+			glBindTexture(GL_TEXTURE_2D, NULL);
 
-		glTranslatef(-5.0f, -2.0f, 4.0f);
-		glScalef(0.1f, 0.1f, 0.1f);
-		glColor3f(1.0f, 1.0f, 1.0f);
+			glTranslatef(-2.0f, -8.0f, -14.0f);
+			bell_Tower.render();
 
-		model.render();
+			glPushMatrix();
 
-		glScalef(10.0f, 10.0f, 10.0f);
-		glTranslatef(5.0f, 2.0f, -4.0f);
+				glBindTexture(GL_TEXTURE_2D, hooh);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+				glTranslatef(0.0f, 35.0f, -2.0f);
+				glScalef(0.03f, 0.03f, 0.03f);
+				glColor3f(1.0f, 1.0f, 1.0f);
+
+			model.render();
+
+			glPopMatrix();
+
+		glPopMatrix();
 		
 
 	///WEEK 9 -------------------------------------
@@ -593,6 +601,8 @@ void Scene::renderCube()
 	glVertex3f(1.0f, 1.0f, -1.0f);
 
 	glEnd(); //end drawing
+
+	glColor3f(1.0f, 1.0f, 1.0f);
 }
 
 void Scene::renderSkyBox()

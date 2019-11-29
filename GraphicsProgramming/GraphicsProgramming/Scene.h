@@ -92,6 +92,7 @@ protected:
 	ProceduralGeneration generator;
 
 	Model model;
+	Model bell_Tower;
 };
 
 #endif
