@@ -25,8 +25,8 @@ Scene::Scene(Input *in)
 
 	//Define lights
 
-	//glEnable(GL_COLOR_MATERIAL);
-	//glEnable(GL_LIGHTING);
+	glEnable(GL_COLOR_MATERIAL);
+	glEnable(GL_LIGHTING);
 
 
 	//Depth Test
@@ -109,7 +109,7 @@ Scene::Scene(Input *in)
 	);
 
 
-	model.load("models/sphere.obj", "models/brick.jpg");
+	model.load("models/teapot.obj", "gfx/crate.png");
 }
 
 
@@ -215,6 +215,26 @@ void Scene::render() {
 	//Create skybox (needs to be done first as we disable the depth testing (inside the function))
 	renderSkyBox();
 
+	//Lighting--------
+	glEnable(GL_LIGHTING);
+
+	//set lighting variables
+	GLfloat Light_Ambient[] = { 0.3f, 0.3f, 0.3f, 1.0f };
+	GLfloat Light_Diffuse[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+	GLfloat Light_Specular[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+	GLfloat Light_Position[] = { 0.0f, -0.3f, 1.0f, 0.0f };
+	GLfloat LightDirection[] = { 0.0f, 0.0, -1.0f, 1.0f };
+
+	glLightf(GL_LIGHT0, GL_CONSTANT_ATTENUATION, 1.0);
+	glLightf(GL_LIGHT0, GL_LINEAR_ATTENUATION, 0.2);
+	glLightf(GL_LIGHT0, GL_QUADRATIC_ATTENUATION, 0.0);
+
+	glLightfv(GL_LIGHT0, GL_AMBIENT, Light_Ambient);
+	glLightfv(GL_LIGHT0, GL_DIFFUSE, Light_Diffuse);
+	glLightfv(GL_LIGHT0, GL_POSITION, Light_Position);
+	glLightfv(GL_LIGHT0, GL_SPOT_DIRECTION, LightDirection);
+	glEnable(GL_LIGHT0);
+
 	// Render geometry/scene here -------------------------------------
 
 	//Render plane -------------------------------------
@@ -253,10 +273,24 @@ void Scene::render() {
 	///WEEK 8 -------------------------------------
 
 
+
+
+
 	///WEEK 9 -------------------------------------
 
 		glBindTexture(GL_TEXTURE_2D, myTexture);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+		glTranslatef(-5.0f, -2.0f, 4.0f);
+		glScalef(0.1f, 0.1f, 0.1f);
+		glColor3f(1.0f, 1.0f, 1.0f);
+
 		model.render();
+
+		glScalef(10.0f, 10.0f, 10.0f);
+		glTranslatef(5.0f, 2.0f, -4.0f);
+		
 
 	///WEEK 9 -------------------------------------
 
@@ -267,9 +301,13 @@ void Scene::render() {
 		//Checkered thing
 	
 		glEnable(GL_BLEND);
+
 		glBindTexture(GL_TEXTURE_2D, tpchecks);
+
 		glColor4f(1.0f, 1.0f, 1.0f, 1);
+
 		renderQuad(Vector3(0.0f, 1.0f, 1.0f), 5.0f, 5.0f, 4.0f);
+
 		glDisable(GL_BLEND);
 
 	///WEEK 7 -------------------------------------
@@ -390,12 +428,15 @@ void Scene::renderPlane(double x, double y, double z)
 		glTexCoord2f(x, y);
 		glVertex3f(x, y, z - 1);
 
+		glNormal3f(0.0f, 1.0f, 0.0f);
 		glTexCoord2f(x + 1, y);
 		glVertex3f(x, y, z);
 
+		glNormal3f(0.0f, 1.0f, 0.0f);
 		glTexCoord2f(x + 1, y + 1);
 		glVertex3f(x + 1, y, z);
 
+		glNormal3f(0.0f, 1.0f, 0.0f);
 		glTexCoord2f(x, y + 1);
 		glVertex3f(x + 1, y, z - 1);
 

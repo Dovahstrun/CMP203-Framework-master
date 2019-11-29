@@ -38,7 +38,7 @@ void Model::render()
 	glTexCoordPointer(2, GL_FLOAT, 0, texCoords.data());
 
 	//dereferencing method of choice = 2
-	glDrawArrays(GL_TRIANGLES, 0, m_vertexCount / 3);
+	glDrawArrays(GL_TRIANGLES, 0, m_vertexCount);
 
 	//turn off
 	glDisableClientState(GL_VERTEX_ARRAY);
@@ -117,23 +117,23 @@ bool Model::loadModel(char* filename)
 	// You NEED to loop over all the data and sort it into a render ready order/format.
 	for (int i = 0; i < faces.size(); ++i)
 	{
-		vertex[i] = verts[i].x;
-		vertex[i + 1] = verts[i].y;
-		vertex[i + 2] = verts[i].z;
+		vertex.push_back(verts[faces[i]-1].x);
+		vertex.push_back(verts[faces[i]-1].y);
+		vertex.push_back(verts[faces[i]-1].z);
 		m_vertexCount += 1;
 
 		++i;
-
-		texCoords[i] = texCs[i].x;
-		texCoords[i + 1] = texCs[i].y;
-
+			
+		texCoords.push_back(texCs[faces[i]-1].x);
+		texCoords.push_back(texCs[faces[i]-1].y);
+		
 		++i;
 
-		normals[i] = norms[i].x;
-		normals[i + 1] = norms[i].y;
-		normals[i + 2] = norms[i].z;
+		normals.push_back(norms[faces[i]-1].x);
+		normals.push_back(norms[faces[i]-1].y);
+		normals.push_back(norms[faces[i]-1].z);
 
-		++i;
+		//++i;
 	}
 	
 	
@@ -150,10 +150,10 @@ void Model::loadTexture(char* filename)
 {
 	texture = SOIL_load_OGL_texture
 	(
-		filename,
+		"gfx/crate.png",
 		SOIL_LOAD_AUTO,
 		SOIL_CREATE_NEW_ID,
-		SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT | SOIL_FLAG_INVERT_Y // Depending on texture file type some need inverted others don't.
+		SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT// Depending on texture file type some need inverted others don't.
 	);
 
 	//check for an error during the load process

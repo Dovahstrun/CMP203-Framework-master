@@ -17,7 +17,6 @@
 #include <vector>
 #include "MyCamera.h"
 #include <iostream>
-#include <conio.h>
 #include "Shape.h"
 #include "ProceduralGeneration.h"
 #include "Model.h"
