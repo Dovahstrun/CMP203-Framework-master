@@ -1,0 +1,58 @@
+# 3ds Max Wavefront OBJ Exporter v0.97b - (c)2007 guruware
+# File Created: 29.11.2019 08:43:11
+
+newmtl Material__50
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5880 0.5880 0.5880
+	Kd 0.5880 0.5880 0.5880
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka E:\Pictures\3D Models\Pokemon\Pokemon XY\Ho-Oh\images\pm0250_00_Eye1.png
+	map_Kd E:\Pictures\3D Models\Pokemon\Pokemon XY\Ho-Oh\images\pm0250_00_Eye1.png
+
+newmtl Material__51
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5880 0.5880 0.5880
+	Kd 0.5880 0.5880 0.5880
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka E:\Pictures\3D Models\Pokemon\Pokemon XY\Ho-Oh\images\pm0250_00_BodyA1.png
+	map_Kd E:\Pictures\3D Models\Pokemon\Pokemon XY\Ho-Oh\images\pm0250_00_BodyA1.png
+
+newmtl Material__52
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5880 0.5880 0.5880
+	Kd 0.5880 0.5880 0.5880
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka E:\Pictures\3D Models\Pokemon\Pokemon XY\Ho-Oh\images\pm0250_00_BodyB1.png
+	map_Kd E:\Pictures\3D Models\Pokemon\Pokemon XY\Ho-Oh\images\pm0250_00_BodyB1.png
+
+newmtl Material__53
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5880 0.5880 0.5880
+	Kd 0.5880 0.5880 0.5880
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka E:\Pictures\3D Models\Pokemon\Pokemon XY\Ho-Oh\images\pm0250_00_BodyC1.png
+	map_Kd E:\Pictures\3D Models\Pokemon\Pokemon XY\Ho-Oh\images\pm0250_00_BodyC1.png

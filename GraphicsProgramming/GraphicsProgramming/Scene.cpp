@@ -108,8 +108,16 @@ Scene::Scene(Input *in)
 		SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT
 	);
 
+	hooh = SOIL_load_OGL_texture
+	(
+		"gfx/UV Unwrap.png",
+		SOIL_LOAD_AUTO,
+		SOIL_CREATE_NEW_ID,
+		SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT
+	);
 
-	model.load("models/teapot.obj", "gfx/crate.png");
+
+	model.load("models/Ho-oh.obj", "gfx/UV Unwrap.png");
 }
 
 
@@ -278,7 +286,7 @@ void Scene::render() {
 
 	///WEEK 9 -------------------------------------
 
-		glBindTexture(GL_TEXTURE_2D, myTexture);
+		glBindTexture(GL_TEXTURE_2D, hooh);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 

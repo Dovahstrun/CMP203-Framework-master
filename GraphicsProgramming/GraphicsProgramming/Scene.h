@@ -81,6 +81,7 @@ protected:
 	GLuint tpchecks;
 	GLuint tpcrate;
 	GLuint sky;
+	GLuint hooh;
 
 	GLint polygonMode;
 
