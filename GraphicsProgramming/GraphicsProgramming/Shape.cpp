@@ -276,7 +276,7 @@ void Shape::render2()
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
 	//specify data for the arrays
-	glVertexPointer(3, GL_FLOAT, 0, tricubeverts);
+	glVertexPointer(3, GL_FLOAT, 0, verts);
 	glNormalPointer(GL_FLOAT, 0, norms);
 	glTexCoordPointer(2, GL_FLOAT, 0, texcoords);
 

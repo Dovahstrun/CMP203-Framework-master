@@ -143,6 +143,8 @@ Scene::Scene(Input *in)
 	suicune.load("models/suicune.obj", "models/Ho-oh/textures/houou_0_0.png");
 	entei.load("models/entei.obj", "models/Ho-oh/textures/houou_0_0.png");
 	raikou.load("models/raikou.obj", "models/Ho-oh/textures/houou_0_0.png");
+	lightShine.load("models/LightShine.obj", "models/Ho-oh/textures/houou_0_0.png");
+	plane.load("models/plane.obj", "models/Ho-oh/textures/houou_0_0.png");
 }
 
 
@@ -231,6 +233,9 @@ void Scene::update(float dt)
 	//Update camera
 	camera.update(dt);
 
+	//Update rotation
+	rotation += 20 * dt;
+
 	// Calculate FPS for output
 	calculateFPS();
 }
@@ -254,40 +259,66 @@ void Scene::render() {
 	//set lighting variables
 	GLfloat Light_Ambient[] = { 0.3f, 0.3f, 0.3f, 1.0f };
 	GLfloat Light_Diffuse[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+	GLfloat Light_DiffuseHooh[] = { 1.0f, 0.83f, 0.0f, 1.0f };
+
 	GLfloat Light_Specular[] = { 1.0f, 1.0f, 1.0f, 1.0f };
-	GLfloat Light_Position[] = { 0.0f, -0.3f, 1.0f, 0.0f };
+
+	GLfloat Light_PositionHooh[] = { 0.0f, 0.0f, 0.0f, 1.0f };
+	GLfloat Light_Position[] = { 0.2f, 1.0f, -0.1f, 0.0f };
+
 	GLfloat LightDirection[] = { 0.0f, 0.0, -1.0f, 1.0f };
 
-	glLightf(GL_LIGHT0, GL_CONSTANT_ATTENUATION, 1.0);
-	glLightf(GL_LIGHT0, GL_LINEAR_ATTENUATION, 0.2);
-	glLightf(GL_LIGHT0, GL_QUADRATIC_ATTENUATION, 0.0);
+	
+	glPushMatrix();
 
-	glLightfv(GL_LIGHT0, GL_AMBIENT, Light_Ambient);
-	glLightfv(GL_LIGHT0, GL_DIFFUSE, Light_Diffuse);
-	glLightfv(GL_LIGHT0, GL_POSITION, Light_Position);
-	glLightfv(GL_LIGHT0, GL_SPOT_DIRECTION, LightDirection);
-	glEnable(GL_LIGHT0);
+		glTranslatef(-2.0f, 31.0f, -16.0f);
+
+		glLightf(GL_LIGHT0, GL_CONSTANT_ATTENUATION, 1.0);
+		glLightf(GL_LIGHT0, GL_LINEAR_ATTENUATION, 0.25);
+		glLightf(GL_LIGHT0, GL_QUADRATIC_ATTENUATION, 0.01);
+
+		glLightfv(GL_LIGHT0, GL_AMBIENT, Light_Ambient);
+		glLightfv(GL_LIGHT0, GL_DIFFUSE, Light_DiffuseHooh);
+		glLightfv(GL_LIGHT0, GL_POSITION, Light_PositionHooh);
+		//glLightfv(GL_LIGHT0, GL_SPOT_DIRECTION, LightDirection);
+		glEnable(GL_LIGHT0);
+
+	glPopMatrix();
+
+	glLightfv(GL_LIGHT1, GL_AMBIENT, Light_Ambient);
+	glLightfv(GL_LIGHT1, GL_DIFFUSE, Light_Diffuse);
+	glLightfv(GL_LIGHT1, GL_POSITION, Light_Position);
+	glEnable(GL_LIGHT1);
 
 	// Render geometry/scene here -------------------------------------
 
 	//Render plane -------------------------------------
-	for (double i = -10; i < 10; i += 1)
+	for (double i = -10; i < 100; i += 1)
 	{
-		for (double j = -10; j < 10; j += 1)
+		for (double j = -10; j < 100; j += 1)
 		{
 			renderPlane(i, 0.0f, j);
 		}
 	}
+
+	/*glPushMatrix();
+		glTranslatef(0.0f, -10.0f, 0.0f);
+		glBindTexture(GL_TEXTURE_2D, grass);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		glColor3f(0.0f, 1.0f, 0.0f);
+		plane.render();
+	glPopMatrix();*/
 	//Render plane -------------------------------------
 	
 	///WEEK 5 RUBIKS CUBE -------------------------------------
-		rotation += 0.4f;
+		/*rotation += 0.4f;
 		glBindTexture(GL_TEXTURE_2D, rubiks);
 		glTranslatef(5.0f, -2.0f, -3.0f);
 		glRotatef(rotation, 0, 1, 0);
 		renderCube();
 		glRotatef(-rotation, 0, 1, 0);
-		glTranslatef(-5.0f, 2.0f, 3.0f);
+		glTranslatef(-5.0f, 2.0f, 3.0f);*/
 	///WEEK 5 RUBIKS CUBE -------------------------------------
 
 
@@ -309,10 +340,13 @@ void Scene::render() {
 
 
 
-	///WEEK 9 -------------------------------------
+	///ASSIGNMENT -------------------------------------
+
+		
 
 		//BELL TOWER
 		glPushMatrix();
+			glColor3f(1.0f, 1.0f, 1.0f);
 			glBindTexture(GL_TEXTURE_2D, NULL);
 
 			glTranslatef(-2.0f, -8.0f, -14.0f);
@@ -337,7 +371,7 @@ void Scene::render() {
 			//SUICUNE
 			glPushMatrix();
 				
-				glBindTexture(GL_TEXTURE_2D, suicuneTex);
+				//glBindTexture(GL_TEXTURE_2D, suicuneTex);
 				glTranslatef(0.0f, -2.0f, 12.0f);
 				glScalef(0.02f, 0.02f, 0.02f);
 				suicune.render();
@@ -366,10 +400,25 @@ void Scene::render() {
 
 			glPopMatrix();
 
+			glPushMatrix();
+				
+				glEnable(GL_BLEND);
+				
+				glTranslatef(0.0f, 39.0f, -1.0f);
+				glRotatef(rotation, 1, 1, 1);
+				glScalef(0.3f, 0.3f, 0.3f);
+				glColor4f(1.0f, 1.0f, 0.0f, 0.1f);
+
+				lightShine.render();
+
+				glDisable(GL_BLEND);
+
+			glPopMatrix();
+
 		glPopMatrix();
 		
 
-	///WEEK 9 -------------------------------------
+	///ASSIGNMENT -------------------------------------
 
 
 
@@ -377,7 +426,7 @@ void Scene::render() {
 
 		//Checkered thing
 	
-		glEnable(GL_BLEND);
+		/*glEnable(GL_BLEND);
 
 		glBindTexture(GL_TEXTURE_2D, tpchecks);
 
@@ -385,7 +434,7 @@ void Scene::render() {
 
 		renderQuad(Vector3(0.0f, 1.0f, 1.0f), 5.0f, 5.0f, 4.0f);
 
-		glDisable(GL_BLEND);
+		glDisable(GL_BLEND);*/
 
 	///WEEK 7 -------------------------------------
 	
@@ -494,11 +543,11 @@ void Scene::renderPlane(double x, double y, double z)
 	glBindTexture(GL_TEXTURE_2D, grass);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	glTranslatef(0.0f, -10.0f, 0.0f);
+	glTranslatef(-50.0f, -10.0f, -50.0f);
 
 	glBegin(GL_QUADS);
 
-		//glColor3f(0.0f, 1.0f, 0.0f);
+		glColor3f(0.0f, 1.0f, 0.0f);
 		//set normal
 		glNormal3f(0.0f, 1.0f, 0.0f);
 		//draw plane
@@ -519,7 +568,9 @@ void Scene::renderPlane(double x, double y, double z)
 
 	glEnd();
 
-	glTranslatef(0.0f, 10.0f, 0.0f);
+	
+
+	glTranslatef(50.0f, 10.0f, 50.0f);
 	glColor3f(1.0f, 1.0f, 1.0f);
 }
 

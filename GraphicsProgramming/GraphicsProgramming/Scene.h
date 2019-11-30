@@ -99,6 +99,8 @@ protected:
 	Model suicune;
 	Model entei;
 	Model raikou;
+	Model lightShine;
+	Model plane;
 };
 
 #endif
