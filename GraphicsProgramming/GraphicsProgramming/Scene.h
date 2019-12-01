@@ -85,6 +85,7 @@ protected:
 	GLuint suicuneTex;
 	GLuint enteiTex;
 	GLuint raikouTex;
+	GLuint bellTex;
 
 	GLint polygonMode;
 

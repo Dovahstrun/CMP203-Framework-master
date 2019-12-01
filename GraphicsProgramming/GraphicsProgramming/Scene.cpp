@@ -34,6 +34,7 @@ Scene::Scene(Input *in)
 	glDepthFunc(GL_LEQUAL);
 	glEnable(GL_TEXTURE_2D);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 
 
 	myTexture = SOIL_load_OGL_texture
@@ -118,33 +119,41 @@ Scene::Scene(Input *in)
 
 	suicuneTex = SOIL_load_OGL_texture
 	(
-		"models/Suicune/BodyB1_0",
+		"models/Suicune/SuicuneTex.png",
 		SOIL_LOAD_AUTO,
 		SOIL_CREATE_NEW_ID,
-		SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT
+		SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT | SOIL_FLAG_INVERT_Y
 	);
 
 	enteiTex = SOIL_load_OGL_texture
 	(
-		"models/Entei/images/pm0244_00_BodyA1",
+		"models/Entei/images/pm0244_00_BodyA1.png",
 		SOIL_LOAD_AUTO,
 		SOIL_CREATE_NEW_ID,
 		SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT
 	);
 	raikouTex = SOIL_load_OGL_texture
 	(
-		"models/Raikou/images/pm0243_00_BodyA1",
+		"models/Raikou/images/pm0243_00_BodyA1.png",
 		SOIL_LOAD_AUTO,
 		SOIL_CREATE_NEW_ID,
 		SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT
 	);
+	bellTex = SOIL_load_OGL_texture
+	(
+		"models/Japanese_Temple_Model/Textures/Japanese_Shrine_Cylinder_030DiffuseMap.png",
+		SOIL_LOAD_AUTO,
+		SOIL_CREATE_NEW_ID,
+		SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT
+	);
+
 	model.load("models/Ho-oh.obj", "models/Ho-oh/textures/houou_0_0.png");
 	bell_Tower.load("models/Bell Tower/Japanese Shrine Tower/Bell Tower.obj", "models/Ho-oh/textures/houou_0_0.png");
-	suicune.load("models/suicune.obj", "models/Ho-oh/textures/houou_0_0.png");
+	suicune.load("models/suicunemod.obj", "models/Suicune/SuicuneTex.png");
 	entei.load("models/entei.obj", "models/Ho-oh/textures/houou_0_0.png");
 	raikou.load("models/raikou.obj", "models/Ho-oh/textures/houou_0_0.png");
 	lightShine.load("models/LightShine.obj", "models/Ho-oh/textures/houou_0_0.png");
-	plane.load("models/plane.obj", "models/Ho-oh/textures/houou_0_0.png");
+	//plane.load("models/plane.obj", "models/Ho-oh/textures/houou_0_0.png");models/Bell Tower/Japanese Shrine Tower/Bell Tower.obj
 }
 
 
@@ -347,7 +356,9 @@ void Scene::render() {
 		//BELL TOWER
 		glPushMatrix();
 			glColor3f(1.0f, 1.0f, 1.0f);
-			glBindTexture(GL_TEXTURE_2D, NULL);
+			glBindTexture(GL_TEXTURE_2D, bellTex);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
 			glTranslatef(-2.0f, -8.0f, -14.0f);
 			bell_Tower.render();
@@ -371,7 +382,9 @@ void Scene::render() {
 			//SUICUNE
 			glPushMatrix();
 				
-				//glBindTexture(GL_TEXTURE_2D, suicuneTex);
+				glBindTexture(GL_TEXTURE_2D, suicuneTex);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 				glTranslatef(0.0f, -2.0f, 12.0f);
 				glScalef(0.02f, 0.02f, 0.02f);
 				suicune.render();
@@ -383,6 +396,8 @@ void Scene::render() {
 			glPushMatrix();
 
 				glBindTexture(GL_TEXTURE_2D, enteiTex);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 				glTranslatef(3.0f, -2.0f, 12.0f);
 				glScalef(0.8f, 0.8f, 0.8f);
 				entei.render();
@@ -394,6 +409,9 @@ void Scene::render() {
 			glPushMatrix();
 
 				glBindTexture(GL_TEXTURE_2D, raikouTex);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+				
 				glTranslatef(-3.0f, -2.0f, 12.0f);
 				glScalef(0.8f, 0.8f, 0.8f);
 				raikou.render();
@@ -402,6 +420,7 @@ void Scene::render() {
 
 			glPushMatrix();
 				
+				glBindTexture(GL_TEXTURE_2D, NULL);
 				glEnable(GL_BLEND);
 				
 				glTranslatef(0.0f, 39.0f, -1.0f);
