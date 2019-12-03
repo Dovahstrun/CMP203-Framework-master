@@ -13,6 +13,11 @@ public:
 	Vector3 getLookAt();
 	Vector3 getUp();
 
+	void setPosition(Vector3 _position);
+	void setYaw(float _newYaw);
+	void setPitch(float _newPitch);
+	void setRoll (float _newRoll);
+
 	//Movement
 	void moveForward(float dt);
 	void moveBackward(float dt);

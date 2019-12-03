@@ -66,6 +66,26 @@ Vector3 MyCamera::getUp()
 	return up;
 }
 
+void MyCamera::setPosition(Vector3 _position)
+{
+	position = _position;
+}
+
+void MyCamera::setYaw(float _newYaw)
+{
+	Yaw = _newYaw;
+}
+
+void MyCamera::setPitch(float _newPitch)
+{
+	Pitch = _newPitch;
+}
+
+void MyCamera::setRoll(float _newRoll)
+{
+	Roll = _newRoll;
+}
+
 void MyCamera::moveForward(float dt)
 {
 	position.x += 10.0 * forward.x * dt;

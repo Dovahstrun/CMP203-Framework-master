@@ -25,6 +25,14 @@
 class Scene{
 
 public:
+
+	enum CameraViews
+	{
+		MAIN,
+		HOOH,
+		BEASTS
+	};
+
 	Scene(Input *in);
 	// Main render function
 	void render();
@@ -37,7 +45,7 @@ public:
 
 	void renderPlane(double x, double y, double z);
 	void renderCube();
-	void renderSkyBox();
+	void renderSkyBox(MyCamera _currentCamera);
 	void renderBox();
 	void renderQuad(Vector3 startVertex, double xLength, double yLength, double zLength);
 
@@ -70,6 +78,10 @@ protected:
 
 	//Camera
 	MyCamera camera;
+	MyCamera hoohView;
+	MyCamera beastView;
+
+	CameraViews cameraViews;
 
 	//Textures
 	GLuint myTexture;

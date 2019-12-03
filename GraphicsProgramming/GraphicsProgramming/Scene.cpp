@@ -154,12 +154,26 @@ Scene::Scene(Input *in)
 	raikou.load("models/raikou.obj", "models/Ho-oh/textures/houou_0_0.png");
 	lightShine.load("models/LightShine.obj", "models/Ho-oh/textures/houou_0_0.png");
 	//plane.load("models/plane.obj", "models/Ho-oh/textures/houou_0_0.png");models/Bell Tower/Japanese Shrine Tower/Bell Tower.obj
+
+	cameraViews = MAIN; 
+
+	hoohView.setPosition(Vector3(7.0f, 27.0f, 10.0f));
+	hoohView.setYaw(-20);
+	hoohView.setPitch(10);
+
+	beastView.setPosition(Vector3(-6.0f, -2.0f, 15.0f));
+	beastView.setYaw(15);
+	beastView.setPitch(-20);
 }
 
 
 void Scene::handleInput(float dt)
 {
 	// Handle user input
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////////
+	///WIREFRAME MODE
+	//////////////////////////////////////////////////////////////////////////////////////////////////////
 	if (input->isKeyDown('r'))
 	{
 		glGetIntegerv(GL_POLYGON_MODE, &polygonMode);
@@ -174,6 +188,21 @@ void Scene::handleInput(float dt)
 		input->SetKeyUp('r');
 	}
 
+	//////////////////////////////////////////////////////////////////////////////////////////////////////
+	///CAMERAS
+	//////////////////////////////////////////////////////////////////////////////////////////////////////
+	if (input->isKeyDown('h'))
+	{
+		cameraViews = HOOH;
+	}
+	else if (input->isKeyDown('b'))
+	{
+		cameraViews = BEASTS;
+	}
+	else
+	{
+		cameraViews = MAIN;
+	}
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////
 	///MOVEMENT
@@ -241,6 +270,8 @@ void Scene::update(float dt)
 
 	//Update camera
 	camera.update(dt);
+	hoohView.update(dt);
+	beastView.update(dt);
 
 	//Update rotation
 	rotation += 20 * dt;
@@ -257,10 +288,34 @@ void Scene::render() {
 	// Reset transformations
 	glLoadIdentity();
 	// Set the camera
-	gluLookAt(camera.getPosition().x, camera.getPosition().y, camera.getPosition().z, camera.getLookAt().x, camera.getLookAt().y, camera.getLookAt().z, camera.getUp().x, camera.getUp().y, camera.getUp().z);
+	if (cameraViews == MAIN)
+	{
+		gluLookAt(camera.getPosition().x, camera.getPosition().y, camera.getPosition().z, camera.getLookAt().x, camera.getLookAt().y, camera.getLookAt().z, camera.getUp().x, camera.getUp().y, camera.getUp().z);
+	}
+	else if (cameraViews == HOOH)
+	{
+		gluLookAt(hoohView.getPosition().x, hoohView.getPosition().y, hoohView.getPosition().z, hoohView.getLookAt().x, hoohView.getLookAt().y, hoohView.getLookAt().z, hoohView.getUp().x, hoohView.getUp().y, hoohView.getUp().z);
+	}
+	else if (cameraViews == BEASTS)
+	{
+		gluLookAt(beastView.getPosition().x, beastView.getPosition().y, beastView.getPosition().z, beastView.getLookAt().x, beastView.getLookAt().y, beastView.getLookAt().z, beastView.getUp().x, beastView.getUp().y, beastView.getUp().z);
+	}
+	
 	
 	//Create skybox (needs to be done first as we disable the depth testing (inside the function))
-	renderSkyBox();
+	if (cameraViews == MAIN)
+	{
+		renderSkyBox(camera);
+	}
+	else if (cameraViews == HOOH)
+	{
+		renderSkyBox(hoohView);
+	}
+	else if (cameraViews == BEASTS)
+	{
+		renderSkyBox(beastView);
+	}
+	
 
 	//Lighting--------
 	glEnable(GL_LIGHTING);
@@ -736,13 +791,13 @@ void Scene::renderCube()
 	glColor3f(1.0f, 1.0f, 1.0f);
 }
 
-void Scene::renderSkyBox()
+void Scene::renderSkyBox(MyCamera _currentCamera)
 {
 	glPushMatrix();
 		glBindTexture(GL_TEXTURE_2D, sky);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);//This removes one of the seams
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-		glTranslatef(camera.getPosition().x, camera.getPosition().y, camera.getPosition().z);
+		glTranslatef(_currentCamera.getPosition().x, _currentCamera.getPosition().y, _currentCamera.getPosition().z);
 		glColor3f(1.0f, 1.0f, 1.0f);
 		glDisable(GL_DEPTH_TEST);
 		renderBox();
