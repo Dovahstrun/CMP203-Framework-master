@@ -73,6 +73,8 @@ protected:
 
 	//My variables
 	float rotation = 0.0f;
+	float spotlightXTranslate = -3.0f;
+	bool xIncrease = true;
 	//GLfloat shininess[] = { 50 };
 	float shiny = 50.0f;
 
@@ -93,7 +95,7 @@ protected:
 	GLuint tpchecks;
 	GLuint tpcrate;
 	GLuint sky;
-	GLuint hooh;
+	GLuint hoohTex;
 	GLuint suicuneTex;
 	GLuint enteiTex;
 	GLuint raikouTex;
@@ -107,7 +109,7 @@ protected:
 	//Procedural Generator
 	ProceduralGeneration generator;
 
-	Model model;
+	Model hooh;
 	Model bell_Tower;
 	Model suicune;
 	Model entei;

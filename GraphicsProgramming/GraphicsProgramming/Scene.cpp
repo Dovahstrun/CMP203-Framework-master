@@ -109,7 +109,7 @@ Scene::Scene(Input *in)
 		SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT
 	);
 
-	hooh = SOIL_load_OGL_texture
+	hoohTex = SOIL_load_OGL_texture
 	(
 		"models/Ho-oh/textures/houou_0_0.png",
 		SOIL_LOAD_AUTO,
@@ -147,13 +147,12 @@ Scene::Scene(Input *in)
 		SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT
 	);
 
-	model.load("models/Ho-oh.obj", "models/Ho-oh/textures/houou_0_0.png");
+	hooh.load("models/Ho-oh.obj", "models/Ho-oh/textures/houou_0_0.png");
 	bell_Tower.load("models/Bell Tower/Japanese Shrine Tower/Bell Tower.obj", "models/Ho-oh/textures/houou_0_0.png");
 	suicune.load("models/suicunemod.obj", "models/Suicune/SuicuneTex.png");
 	entei.load("models/entei.obj", "models/Ho-oh/textures/houou_0_0.png");
 	raikou.load("models/raikou.obj", "models/Ho-oh/textures/houou_0_0.png");
 	lightShine.load("models/LightShine.obj", "models/Ho-oh/textures/houou_0_0.png");
-	//plane.load("models/plane.obj", "models/Ho-oh/textures/houou_0_0.png");models/Bell Tower/Japanese Shrine Tower/Bell Tower.obj
 
 	cameraViews = MAIN; 
 
@@ -276,6 +275,26 @@ void Scene::update(float dt)
 	//Update rotation
 	rotation += 20 * dt;
 
+	//Update spotlight position
+	
+	if (spotlightXTranslate <= -3.0f)
+	{
+		xIncrease = true;
+	}
+	else if (spotlightXTranslate >= 3.0f)
+	{
+		xIncrease = false;
+	}
+
+	if (xIncrease)
+	{
+		spotlightXTranslate += 2.0f * dt;
+	}
+	else if (!xIncrease)
+	{
+		spotlightXTranslate -= 2.0f * dt;
+	}
+
 	// Calculate FPS for output
 	calculateFPS();
 }
@@ -283,7 +302,7 @@ void Scene::update(float dt)
 void Scene::render() {
 
 	// Clear Color and Depth Buffers
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
 	// Reset transformations
 	glLoadIdentity();
@@ -321,16 +340,19 @@ void Scene::render() {
 	glEnable(GL_LIGHTING);
 
 	//set lighting variables
-	GLfloat Light_Ambient[] = { 0.3f, 0.3f, 0.3f, 1.0f };
-	GLfloat Light_Diffuse[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+	GLfloat Light_Ambient[] = { 0.01f, 0.01f, 0.01f, 1.0f };
+	GLfloat Light_AmbientSpotLight[] = { 0.3f, 0.3f, 0.3f, 1.0f };
+	GLfloat Light_Diffuse[] = { 0.5f, 0.5f, 0.5f, 1.0f };
+	GLfloat Light_DiffuseSpotLight[] = { 1.0f, 0.83f, 0.0f, 1.0f };
 	GLfloat Light_DiffuseHooh[] = { 1.0f, 0.83f, 0.0f, 1.0f };
 
 	GLfloat Light_Specular[] = { 1.0f, 1.0f, 1.0f, 1.0f };
 
 	GLfloat Light_PositionHooh[] = { 0.0f, 0.0f, 0.0f, 1.0f };
 	GLfloat Light_Position[] = { 0.2f, 1.0f, -0.1f, 0.0f };
+	GLfloat Light_PositionSpotLight[] = { -2.0f, -5.0f, -2.0f, 1.0f };
 
-	GLfloat LightDirection[] = { 0.0f, 0.0, -1.0f, 1.0f };
+	GLfloat LightDirection[] = { 0.0f, -1.0, 0.0f, 1.0f };
 
 	
 	glPushMatrix();
@@ -354,6 +376,29 @@ void Scene::render() {
 	glLightfv(GL_LIGHT1, GL_POSITION, Light_Position);
 	glEnable(GL_LIGHT1);
 
+	/*glLightfv(GL_LIGHT1, GL_AMBIENT, Light_Ambient);
+	glLightfv(GL_LIGHT1, GL_DIFFUSE, Light_Diffuse);
+	glLightfv(GL_LIGHT1, GL_POSITION, Light_Position);
+	glEnable(GL_LIGHT1);*/
+
+	glPushMatrix();
+
+		glTranslatef(spotlightXTranslate, 0.0f, 0.0f);
+
+		glLightf(GL_LIGHT2, GL_CONSTANT_ATTENUATION, 1.0);
+		glLightf(GL_LIGHT2, GL_LINEAR_ATTENUATION, 0.0);
+		glLightf(GL_LIGHT2, GL_QUADRATIC_ATTENUATION, 0.0);
+
+		glLightfv(GL_LIGHT2, GL_AMBIENT, Light_AmbientSpotLight);
+		glLightfv(GL_LIGHT2, GL_DIFFUSE, Light_DiffuseSpotLight);
+		glLightfv(GL_LIGHT2, GL_POSITION, Light_PositionSpotLight);
+		glLightf(GL_LIGHT2, GL_SPOT_CUTOFF, 50.0f); 
+		glLightfv(GL_LIGHT2, GL_SPOT_DIRECTION, LightDirection);
+		glLightf(GL_LIGHT2, GL_SPOT_EXPONENT, 50.0);
+		glEnable(GL_LIGHT2);
+
+	glPopMatrix();
+
 	// Render geometry/scene here -------------------------------------
 
 	//Render plane -------------------------------------
@@ -364,6 +409,99 @@ void Scene::render() {
 			renderPlane(i, 0.0f, j);
 		}
 	}
+
+	///WEEK 10 STENCIL BUFFER -------------------------------------
+		
+
+	//Set up stencil stuff
+	/*glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
+	glEnable(GL_STENCIL_TEST);
+	glStencilFunc(GL_ALWAYS, 1, 1);
+	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+	glDisable(GL_DEPTH_TEST);
+
+	//Render the window
+	glBindTexture(GL_TEXTURE_2D, NULL);
+
+	glPushMatrix();
+
+		renderQuad(Vector3(-3, 0, 0), 6, 6, 0);
+
+	glPopMatrix();
+
+	//Set up more stencil stuff
+	glEnable(GL_DEPTH_TEST);
+	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+	glStencilFunc(GL_EQUAL, 1, 1);
+	glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
+
+	//Render the model in the stencil world
+	glPushMatrix();
+	
+		glBindTexture(GL_TEXTURE_2D, rubiks);
+		glScalef(1.0, 1.0, -1.0f);
+		glTranslatef(0, 0, 3);
+		glRotatef(rotation, 0, 1, 0);
+		renderCube();
+		
+	glPopMatrix();
+
+	//Generate a second model in the stencil world
+	glPushMatrix();
+
+		glBindTexture(GL_TEXTURE_2D, suicuneTex);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		glScalef(0.01f, 0.01f, -0.01f);
+		glTranslatef(0.0f, 0.0f, 800.0f);
+		suicune.render();
+
+	glPopMatrix();
+
+	//De set up stencil things
+	glDisable(GL_STENCIL_TEST);
+	glEnable(GL_BLEND);
+	glDisable(GL_LIGHTING);
+	glColor4f(0.8f, 0.8f, 1.0f, 0.8f);
+
+	//Generate the window again for reasons
+	glBindTexture(GL_TEXTURE_2D, NULL);
+
+	glPushMatrix();
+
+		renderQuad(Vector3(-3, 0, 0), 6, 6, 0);
+
+	glPopMatrix();
+
+	//De-set up stencil things
+	glEnable(GL_LIGHTING);
+	glDisable(GL_BLEND);
+
+	//Render the actual model
+	glPushMatrix();
+
+		glBindTexture(GL_TEXTURE_2D, rubiks);
+		glTranslatef(0, 0, 3);
+		glRotatef(rotation, 0, 1, 0);
+		renderCube();
+	glPopMatrix();
+
+	//Render the second actual model
+	glPushMatrix();
+
+		glBindTexture(GL_TEXTURE_2D, suicuneTex);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		glScalef(0.01f, 0.01f, 0.01f);
+		glTranslatef(0.0f, 0.0f, 800.0f);
+		suicune.render();
+
+	glPopMatrix();*/
+
+		
+	///WEEK 10 STENCIL BUFFER -------------------------------------
+
+	
 
 	/*glPushMatrix();
 		glTranslatef(0.0f, -10.0f, 0.0f);
@@ -421,7 +559,7 @@ void Scene::render() {
 			//HO-OH
 			glPushMatrix();
 
-				glBindTexture(GL_TEXTURE_2D, hooh);
+				glBindTexture(GL_TEXTURE_2D, hoohTex);
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
@@ -429,7 +567,7 @@ void Scene::render() {
 				glScalef(0.03f, 0.03f, 0.03f);
 				glColor3f(1.0f, 1.0f, 1.0f);
 
-				model.render();
+				hooh.render();
 
 			glPopMatrix();
 
@@ -440,6 +578,7 @@ void Scene::render() {
 				glBindTexture(GL_TEXTURE_2D, suicuneTex);
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
 				glTranslatef(0.0f, -2.0f, 12.0f);
 				glScalef(0.02f, 0.02f, 0.02f);
 				suicune.render();
@@ -491,7 +630,7 @@ void Scene::render() {
 
 		glPopMatrix();
 		
-
+		
 	///ASSIGNMENT -------------------------------------
 
 
