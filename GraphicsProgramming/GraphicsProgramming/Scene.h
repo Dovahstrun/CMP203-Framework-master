@@ -30,7 +30,8 @@ public:
 	{
 		MAIN,
 		HOOH,
-		BEASTS
+		BEASTS,
+		OVER
 	};
 
 	Scene(Input *in);
@@ -82,6 +83,7 @@ protected:
 	MyCamera camera;
 	MyCamera hoohView;
 	MyCamera beastView;
+	MyCamera overView;
 
 	CameraViews cameraViews;
 
@@ -96,6 +98,7 @@ protected:
 	GLuint tpcrate;
 	GLuint sky;
 	GLuint hoohTex;
+	GLuint shinyhoohTex;
 	GLuint suicuneTex;
 	GLuint enteiTex;
 	GLuint raikouTex;
@@ -104,7 +107,7 @@ protected:
 	GLint polygonMode;
 
 	//Shapes
-	Shape shapes;
+	Shape window;
 	
 	//Procedural Generator
 	ProceduralGeneration generator;

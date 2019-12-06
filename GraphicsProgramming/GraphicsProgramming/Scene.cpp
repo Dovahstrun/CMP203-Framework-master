@@ -117,12 +117,20 @@ Scene::Scene(Input *in)
 		SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT | SOIL_FLAG_INVERT_Y
 	);
 
-	suicuneTex = SOIL_load_OGL_texture
+	shinyhoohTex = SOIL_load_OGL_texture
 	(
-		"models/Suicune/SuicuneTex.png",
+		"models/Ho-oh/textures/houou_0_0S.png",
 		SOIL_LOAD_AUTO,
 		SOIL_CREATE_NEW_ID,
 		SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT | SOIL_FLAG_INVERT_Y
+	);
+
+	suicuneTex = SOIL_load_OGL_texture
+	(
+		"models/Suicune/SuicuneTexe.png",
+		SOIL_LOAD_AUTO,
+		SOIL_CREATE_NEW_ID,
+		SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT
 	);
 
 	enteiTex = SOIL_load_OGL_texture
@@ -130,14 +138,14 @@ Scene::Scene(Input *in)
 		"models/Entei/images/pm0244_00_BodyA1.png",
 		SOIL_LOAD_AUTO,
 		SOIL_CREATE_NEW_ID,
-		SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT
+		SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT | SOIL_FLAG_INVERT_Y
 	);
 	raikouTex = SOIL_load_OGL_texture
 	(
 		"models/Raikou/images/pm0243_00_BodyA1.png",
 		SOIL_LOAD_AUTO,
 		SOIL_CREATE_NEW_ID,
-		SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT
+		SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT | SOIL_FLAG_INVERT_Y
 	);
 	bellTex = SOIL_load_OGL_texture
 	(
@@ -149,7 +157,7 @@ Scene::Scene(Input *in)
 
 	hooh.load("models/Ho-oh.obj", "models/Ho-oh/textures/houou_0_0.png");
 	bell_Tower.load("models/Bell Tower/Japanese Shrine Tower/Bell Tower.obj", "models/Ho-oh/textures/houou_0_0.png");
-	suicune.load("models/suicunemod.obj", "models/Suicune/SuicuneTex.png");
+	suicune.load("models/Suicune/suicunetri.obj", "models/Suicune/SuicuneTex.png");
 	entei.load("models/entei.obj", "models/Ho-oh/textures/houou_0_0.png");
 	raikou.load("models/raikou.obj", "models/Ho-oh/textures/houou_0_0.png");
 	lightShine.load("models/LightShine.obj", "models/Ho-oh/textures/houou_0_0.png");
@@ -163,6 +171,10 @@ Scene::Scene(Input *in)
 	beastView.setPosition(Vector3(-6.0f, -2.0f, 15.0f));
 	beastView.setYaw(15);
 	beastView.setPitch(-20);
+
+	overView.setPosition(Vector3(-21.0f, 27.0f, 40.0f));
+	overView.setYaw(15);
+	overView.setPitch(-20);
 }
 
 
@@ -197,6 +209,10 @@ void Scene::handleInput(float dt)
 	else if (input->isKeyDown('b'))
 	{
 		cameraViews = BEASTS;
+	}
+	else if (input->isKeyDown('o'))
+	{
+		cameraViews = OVER;
 	}
 	else
 	{
@@ -271,6 +287,7 @@ void Scene::update(float dt)
 	camera.update(dt);
 	hoohView.update(dt);
 	beastView.update(dt);
+	overView.update(dt);
 
 	//Update rotation
 	rotation += 20 * dt;
@@ -319,6 +336,10 @@ void Scene::render() {
 	{
 		gluLookAt(beastView.getPosition().x, beastView.getPosition().y, beastView.getPosition().z, beastView.getLookAt().x, beastView.getLookAt().y, beastView.getLookAt().z, beastView.getUp().x, beastView.getUp().y, beastView.getUp().z);
 	}
+	else if (cameraViews == OVER)
+	{
+		gluLookAt(overView.getPosition().x, overView.getPosition().y, overView.getPosition().z, overView.getLookAt().x, overView.getLookAt().y, overView.getLookAt().z, overView.getUp().x, overView.getUp().y, overView.getUp().z);
+	}
 	
 	
 	//Create skybox (needs to be done first as we disable the depth testing (inside the function))
@@ -333,6 +354,10 @@ void Scene::render() {
 	else if (cameraViews == BEASTS)
 	{
 		renderSkyBox(beastView);
+	}
+	else if (cameraViews == OVER)
+	{
+		renderSkyBox(overView);
 	}
 	
 
@@ -556,18 +581,98 @@ void Scene::render() {
 			glTranslatef(-2.0f, -8.0f, -14.0f);
 			bell_Tower.render();
 
-			//HO-OH
+			//HO-OH STENCIL TEST
 			glPushMatrix();
 
-				glBindTexture(GL_TEXTURE_2D, hoohTex);
-				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+				glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
+				glEnable(GL_STENCIL_TEST);
+				glStencilFunc(GL_ALWAYS, 1, 1);
+				glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+				glDisable(GL_DEPTH_TEST);
 
-				glTranslatef(0.0f, 35.0f, -2.0f);
-				glScalef(0.03f, 0.03f, 0.03f);
-				glColor3f(1.0f, 1.0f, 1.0f);
+				//Render the window
+				glBindTexture(GL_TEXTURE_2D, NULL);
 
-				hooh.render();
+				glPushMatrix();
+
+					glTranslatef(0.0f, 35.0f, 20.0f);
+					renderQuad(Vector3(-6, 0, 0), 12, 12, 0);
+
+				glPopMatrix();
+
+				//Set up more stencil stuff
+				glEnable(GL_DEPTH_TEST);
+				glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+				glStencilFunc(GL_EQUAL, 1, 1);
+				glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
+
+				//Render the model in the stencil world
+				glPushMatrix();
+
+					glBindTexture(GL_TEXTURE_2D, shinyhoohTex);
+					glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+					glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+					glTranslatef(0.0f, 35.0f, -2.0f);
+					glScalef(0.03f, 0.03f, 0.03f);
+					glColor3f(1.0f, 1.0f, 1.0f);
+
+					hooh.render();
+
+				glPopMatrix();
+
+				glPushMatrix();
+
+					glBindTexture(GL_TEXTURE_2D, NULL);
+					glEnable(GL_BLEND);
+
+					glTranslatef(0.0f, 39.0f, -1.0f);
+					glRotatef(rotation, 1, 1, 1);
+					glScalef(0.3f, 0.3f, 0.3f);
+					glColor4f(1.0f, 1.0f, 0.0f, 0.1f);
+
+					lightShine.render();
+
+					glDisable(GL_BLEND);
+
+				glPopMatrix();
+
+				//De set up stencil things
+				glDisable(GL_STENCIL_TEST);
+				glEnable(GL_BLEND);
+				glDisable(GL_LIGHTING);
+				glColor4f(1.0f, 1.0f, 1.0f, 0.0f);
+
+				//Generate the window again for reasons
+				glBindTexture(GL_TEXTURE_2D, NULL);
+
+				glPushMatrix();
+
+					glTranslatef(0.0f, 35.0f, 20.0f);
+					renderQuad(Vector3(-6, 0, 0), 12, 12, 0);
+
+				glPopMatrix();
+
+				//De-set up stencil things
+				glEnable(GL_LIGHTING);
+				glDisable(GL_BLEND);
+
+				//Render the actual model
+				glPushMatrix();
+
+					glBindTexture(GL_TEXTURE_2D, hoohTex);
+					glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+					glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+					glTranslatef(0.0f, 35.0f, -2.0f);
+					glScalef(0.03f, 0.03f, 0.03f);
+					glColor3f(1.0f, 1.0f, 1.0f);
+
+					hooh.render();
+
+				glPopMatrix();
+
+			//HO-OH STENCIL TEST
 
 			glPopMatrix();
 
