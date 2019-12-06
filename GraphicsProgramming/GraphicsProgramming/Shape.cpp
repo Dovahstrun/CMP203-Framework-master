@@ -1,12 +1,12 @@
 #include "shape.h"
 
 
-extern float verts[] = {	-1.0, 1.0, 1.0,			// Vertex #0
-							-1.0, -1.0, 1.0,		// Vertex #1
-							1.0, -1.0, 1.0,		// Vertex #2
-							1.0, -1.0, 1.0,			// Vertex #3
-							1.0, 1.0, 1.0,		// Vertex #4
-							-1.0, 1.0, 1.0,			// Vertex #5
+extern float verts[] = {	-3.0, 3.0, 1.0,			// Vertex #0
+							-3.0, -3.0, 1.0,		// Vertex #1
+							3.0, -3.0, 1.0,		// Vertex #2
+							3.0, -3.0, 1.0,			// Vertex #3
+							3.0, 3.0, 1.0,		// Vertex #4
+							-3.0, 3.0, 1.0,			// Vertex #5
 						};
 
 extern float norms[] = { 0.0, 0.0, 1.0,		//0
@@ -281,7 +281,7 @@ void Shape::render2()
 	glTexCoordPointer(2, GL_FLOAT, 0, texcoords);
 
 	//dereferencing method of choice = 2
-	glDrawArrays(GL_TRIANGLES, 0, 36);
+	glDrawArrays(GL_TRIANGLES, 0, 6);
 
 	//turn off
 	glDisableClientState(GL_VERTEX_ARRAY);

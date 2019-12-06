@@ -127,7 +127,7 @@ Scene::Scene(Input *in)
 
 	suicuneTex = SOIL_load_OGL_texture
 	(
-		"models/Suicune/SuicuneTexe.png",
+		"models/Suicune/BodyB1_0.png",
 		SOIL_LOAD_AUTO,
 		SOIL_CREATE_NEW_ID,
 		SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT
@@ -303,11 +303,11 @@ void Scene::update(float dt)
 		xIncrease = false;
 	}
 
-	if (xIncrease)
+	if (xIncrease && input->isKeyDown('i'))
 	{
 		spotlightXTranslate += 2.0f * dt;
 	}
-	else if (!xIncrease)
+	else if (!xIncrease && input->isKeyDown('i'))
 	{
 		spotlightXTranslate -= 2.0f * dt;
 	}
@@ -400,11 +400,6 @@ void Scene::render() {
 	glLightfv(GL_LIGHT1, GL_DIFFUSE, Light_Diffuse);
 	glLightfv(GL_LIGHT1, GL_POSITION, Light_Position);
 	glEnable(GL_LIGHT1);
-
-	/*glLightfv(GL_LIGHT1, GL_AMBIENT, Light_Ambient);
-	glLightfv(GL_LIGHT1, GL_DIFFUSE, Light_Diffuse);
-	glLightfv(GL_LIGHT1, GL_POSITION, Light_Position);
-	glEnable(GL_LIGHT1);*/
 
 	glPushMatrix();
 
@@ -595,8 +590,8 @@ void Scene::render() {
 
 				glPushMatrix();
 
-					glTranslatef(0.0f, 35.0f, 20.0f);
-					renderQuad(Vector3(-6, 0, 0), 12, 12, 0);
+					glTranslatef(-6.0f, 35.0f, 20.0f);
+					window.render2();
 
 				glPopMatrix();
 
@@ -648,8 +643,8 @@ void Scene::render() {
 
 				glPushMatrix();
 
-					glTranslatef(0.0f, 35.0f, 20.0f);
-					renderQuad(Vector3(-6, 0, 0), 12, 12, 0);
+					glTranslatef(-6.0f, 35.0f, 20.0f);
+					window.render2();
 
 				glPopMatrix();
 
