@@ -43,7 +43,8 @@ void MyCamera::update(float dt)
 
 	// Up Vector
 	up.x = -cosY * sinR -sinY * sinP * cosR;
-	up.y = cosP * cosR;up.z = -sinY * sinR -sinP * cosR * -cosY;
+	up.y = cosP * cosR;
+	up.z = -sinY * sinR -sinP * cosR * -cosY;
 	// Side Vector (right)
 	right = forward.cross(up);
 	// this is a cross product between the forward and up vector. 
@@ -69,6 +70,11 @@ Vector3 MyCamera::getUp()
 void MyCamera::setPosition(Vector3 _position)
 {
 	position = _position;
+}
+
+void MyCamera::setLookAt(Vector3 _newLookAt)
+{
+	lookAt = _newLookAt;
 }
 
 void MyCamera::setYaw(float _newYaw)

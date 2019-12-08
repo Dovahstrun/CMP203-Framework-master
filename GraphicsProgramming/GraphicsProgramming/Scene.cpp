@@ -140,6 +140,7 @@ Scene::Scene(Input *in)
 		SOIL_CREATE_NEW_ID,
 		SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT | SOIL_FLAG_INVERT_Y
 	);
+
 	raikouTex = SOIL_load_OGL_texture
 	(
 		"models/Raikou/images/pm0243_00_BodyA1.png",
@@ -147,9 +148,18 @@ Scene::Scene(Input *in)
 		SOIL_CREATE_NEW_ID,
 		SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT | SOIL_FLAG_INVERT_Y
 	);
+
 	bellTex = SOIL_load_OGL_texture
 	(
 		"models/Japanese_Temple_Model/Textures/Japanese_Shrine_Cylinder_030DiffuseMap.png",
+		SOIL_LOAD_AUTO,
+		SOIL_CREATE_NEW_ID,
+		SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT
+	);
+
+	pokeballTex = SOIL_load_OGL_texture
+	(
+		"gfx/pokeball.png",
 		SOIL_LOAD_AUTO,
 		SOIL_CREATE_NEW_ID,
 		SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT
@@ -172,9 +182,10 @@ Scene::Scene(Input *in)
 	beastView.setYaw(15);
 	beastView.setPitch(-20);
 
-	overView.setPosition(Vector3(-21.0f, 27.0f, 40.0f));
-	overView.setYaw(15);
-	overView.setPitch(-20);
+	/*overView.setPosition(Vector3(-21.0f, 27.0f, 50.0f));*/
+	overView.setPosition(Vector3(0.0f, 0.0f, 0.0f));
+	/*overView.setYaw(18);
+	overView.setPitch(-15);*/
 }
 
 
@@ -269,11 +280,13 @@ void Scene::handleInput(float dt)
 	{
 		float xDistance = input->getMouseX() - width / 2; //Figure out how far (X) the mouse is from the centre
 		camera.rotateYaw(xDistance, dt);//Turn camera by that distance horizontally
+		overView.rotateYaw(xDistance, dt);//Turn camera by that distance horizontally
 	}
 	if (input->getMouseY() != 0.0f) //If mouse isn't in the centre
 	{
 		float yDistance = input->getMouseY() - height / 2;//Figure out how far (Y) the mouse is from the centre
 		camera.rotatePitch(yDistance, dt);//turn camera by that distance vertically
+		overView.rotatePitch(yDistance, dt);//turn camera by that distance vertically
 	}
 	glutWarpPointer(width/2, height/2); //Set mouse to centre
 	
@@ -288,6 +301,8 @@ void Scene::update(float dt)
 	hoohView.update(dt);
 	beastView.update(dt);
 	overView.update(dt);
+
+	overView.setLookAt(Vector3(-2.0f, 20.0f, -16.0f));
 
 	//Update rotation
 	rotation += 20 * dt;
@@ -338,7 +353,9 @@ void Scene::render() {
 	}
 	else if (cameraViews == OVER)
 	{
+		glTranslatef(0.0f, 0.0f, rotation / 30);
 		gluLookAt(overView.getPosition().x, overView.getPosition().y, overView.getPosition().z, overView.getLookAt().x, overView.getLookAt().y, overView.getLookAt().z, overView.getUp().x, overView.getUp().y, overView.getUp().z);
+		glTranslatef(0.0f, 0.0f, -rotation / 30);
 	}
 	
 	
@@ -391,7 +408,6 @@ void Scene::render() {
 		glLightfv(GL_LIGHT0, GL_AMBIENT, Light_Ambient);
 		glLightfv(GL_LIGHT0, GL_DIFFUSE, Light_DiffuseHooh);
 		glLightfv(GL_LIGHT0, GL_POSITION, Light_PositionHooh);
-		//glLightfv(GL_LIGHT0, GL_SPOT_DIRECTION, LightDirection);
 		glEnable(GL_LIGHT0);
 
 	glPopMatrix();
@@ -523,14 +539,6 @@ void Scene::render() {
 
 	
 
-	/*glPushMatrix();
-		glTranslatef(0.0f, -10.0f, 0.0f);
-		glBindTexture(GL_TEXTURE_2D, grass);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-		glColor3f(0.0f, 1.0f, 0.0f);
-		plane.render();
-	glPopMatrix();*/
 	//Render plane -------------------------------------
 	
 	///WEEK 5 RUBIKS CUBE -------------------------------------
@@ -548,13 +556,18 @@ void Scene::render() {
 
 
 	///WEEK 8 -------------------------------------
+		
+		glPushMatrix();
 
-		/*glBindTexture(GL_TEXTURE_2D, myTexture);
-		//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-		//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-		glColor3f(1.0f, 1.0f, 1.0f);
-		//generator.RenderDisk(20);
-		shapes.render2();*/
+			glBindTexture(GL_TEXTURE_2D, pokeballTex);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+			glColor3f(1.0f, 1.0f, 1.0f);
+			glTranslatef(-2.0f, -9.99f, 4.0f);
+			glRotatef(-90, 1, 0, 0);
+			generator.RenderDisk(20);
+
+		glPopMatrix();
 
 	///WEEK 8 -------------------------------------
 
@@ -576,7 +589,7 @@ void Scene::render() {
 			glTranslatef(-2.0f, -8.0f, -14.0f);
 			bell_Tower.render();
 
-			//HO-OH STENCIL TEST
+			//HO-OH AND STENCIL TEST
 			glPushMatrix();
 
 				glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
@@ -667,7 +680,7 @@ void Scene::render() {
 
 				glPopMatrix();
 
-			//HO-OH STENCIL TEST
+			//HO-OH AND STENCIL TEST
 
 			glPopMatrix();
 
@@ -712,6 +725,16 @@ void Scene::render() {
 
 			glPopMatrix();
 
+			//OVERVIEW CAMERA SPHERE
+
+			glPushMatrix();
+				glRotatef(rotation, 0, 1, 0);
+				glTranslatef(0.0f, 35.0f, 50.0f);
+				glColor3f(1.0f, 0.0f, 0.0f);
+				overViewSphere.RenderSphere(20);
+			glPopMatrix();
+
+			//LIGHT CONES
 			glPushMatrix();
 				
 				glBindTexture(GL_TEXTURE_2D, NULL);

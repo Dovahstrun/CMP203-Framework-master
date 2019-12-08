@@ -14,6 +14,7 @@ public:
 	Vector3 getUp();
 
 	void setPosition(Vector3 _position);
+	void setLookAt(Vector3 _newLookAt);
 	void setYaw(float _newYaw);
 	void setPitch(float _newPitch);
 	void setRoll (float _newRoll);

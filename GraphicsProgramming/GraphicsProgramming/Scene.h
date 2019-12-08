@@ -103,6 +103,7 @@ protected:
 	GLuint enteiTex;
 	GLuint raikouTex;
 	GLuint bellTex;
+	GLuint pokeballTex;
 
 	GLint polygonMode;
 
@@ -111,6 +112,7 @@ protected:
 	
 	//Procedural Generator
 	ProceduralGeneration generator;
+	ProceduralGeneration overViewSphere;
 
 	Model hooh;
 	Model bell_Tower;
