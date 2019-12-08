@@ -92,6 +92,7 @@
     <ClCompile Include="MyCamera.cpp" />
     <ClCompile Include="ProceduralGeneration.cpp" />
     <ClCompile Include="Scene.cpp" />
+    <ClCompile Include="Shadow.cpp" />
     <ClCompile Include="Shape.cpp" />
     <ClCompile Include="Vector3.cpp" />
   </ItemGroup>
@@ -101,6 +102,7 @@
     <ClInclude Include="MyCamera.h" />
     <ClInclude Include="ProceduralGeneration.h" />
     <ClInclude Include="Scene.h" />
+    <ClInclude Include="Shadow.h" />
     <ClInclude Include="Shape.h" />
     <ClInclude Include="Vector3.h" />
   </ItemGroup>

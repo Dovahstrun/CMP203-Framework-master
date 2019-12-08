@@ -44,6 +44,9 @@ public:
 	// Resizes the OpenGL output based on new window size.
 	void resize(int w, int h);
 
+	//Calculate Camera Orbit
+	void cameraOrbit(MyCamera _camera);
+
 	void renderPlane(double x, double y, double z);
 	void renderCube();
 	void renderSkyBox(MyCamera _currentCamera);
@@ -74,6 +77,7 @@ protected:
 
 	//My variables
 	float rotation = 0.0f;
+	float overViewRotation = 0.0f;
 	float spotlightXTranslate = -3.0f;
 	bool xIncrease = true;
 	//GLfloat shininess[] = { 50 };
@@ -104,6 +108,7 @@ protected:
 	GLuint raikouTex;
 	GLuint bellTex;
 	GLuint pokeballTex;
+	GLuint shadowTex;
 
 	GLint polygonMode;
 

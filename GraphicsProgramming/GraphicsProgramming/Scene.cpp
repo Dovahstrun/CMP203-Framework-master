@@ -151,7 +151,7 @@ Scene::Scene(Input *in)
 
 	bellTex = SOIL_load_OGL_texture
 	(
-		"models/Japanese_Temple_Model/Textures/Japanese_Shrine_Cylinder_030DiffuseMap.png",
+		"models/Japanese_Temple_Model/Textures/Japanese_Temple_Paint2_Japanese_Shrine_Mat_AlbedoTransparency.png",
 		SOIL_LOAD_AUTO,
 		SOIL_CREATE_NEW_ID,
 		SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT
@@ -160,6 +160,14 @@ Scene::Scene(Input *in)
 	pokeballTex = SOIL_load_OGL_texture
 	(
 		"gfx/pokeball.png",
+		SOIL_LOAD_AUTO,
+		SOIL_CREATE_NEW_ID,
+		SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT
+	);
+
+	shadowTex = SOIL_load_OGL_texture
+	(
+		"gfx/imposter.png",
 		SOIL_LOAD_AUTO,
 		SOIL_CREATE_NEW_ID,
 		SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT
@@ -182,10 +190,10 @@ Scene::Scene(Input *in)
 	beastView.setYaw(15);
 	beastView.setPitch(-20);
 
-	/*overView.setPosition(Vector3(-21.0f, 27.0f, 50.0f));*/
-	overView.setPosition(Vector3(0.0f, 0.0f, 0.0f));
-	/*overView.setYaw(18);
-	overView.setPitch(-15);*/
+	overView.setPosition(Vector3(-2.0f, 20.0f, -14.0f));
+	/*overView.setPosition(Vector3(0.0f, 0.0f, 0.0f));*/
+	overView.setYaw(0);
+	overView.setPitch(-15);
 }
 
 
@@ -224,6 +232,10 @@ void Scene::handleInput(float dt)
 	else if (input->isKeyDown('o'))
 	{
 		cameraViews = OVER;
+		if (input->isKeyDown('a'))
+			overViewRotation += 20 * dt;
+		else if (input->isKeyDown('d'))
+			overViewRotation -= 20 * dt;
 	}
 	else
 	{
@@ -235,58 +247,58 @@ void Scene::handleInput(float dt)
 	//////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	//Forwards and back
-	if (input->isKeyDown('w'))
+	if (input->isKeyDown('w') && cameraViews == MAIN)
 	{
 		camera.moveForward(dt);//Forward
 	}
-	if (input->isKeyDown('s'))
+	if (input->isKeyDown('s') && cameraViews == MAIN)
 	{
 		camera.moveBackward(dt);//Backward
 	}
 
 	//Up and down
-	if (input->isKeyDown(' '))
+	if (input->isKeyDown(' ') && cameraViews == MAIN)
 	{
 		camera.moveUp(dt);//Up
 	}
-	if (input->isKeyDown('f'))
+	if (input->isKeyDown('f') && cameraViews == MAIN)
 	{
 		camera.moveDown(dt);//Down
 	}
 
 	//Left and right
-	if (input->isKeyDown('a'))
+	if (input->isKeyDown('a') && cameraViews == MAIN)
 	{
 		camera.moveLeft(dt);//Left
 	}
-	if (input->isKeyDown('d'))
+	if (input->isKeyDown('d') && cameraViews == MAIN)
 	{
 		camera.moveRight(dt);//Right
 	}
 
 	//Rotation
-	if (input->isKeyDown('o'))
+	if (input->isKeyDown('o') && cameraViews == MAIN)
 	{
 		camera.rotateLeft();//Rotate left
 	}
-	if (input->isKeyDown('p'))
+	if (input->isKeyDown('p') && cameraViews == MAIN)
 	{
 		camera.rotateRight();//Rotate right
 	}
 
 
 	//Mouse rotation
-	if (input->getMouseX() != 0.0f) //If mouse isn't in the centre
+	if (input->getMouseX() != 0.0f && cameraViews == MAIN) //If mouse isn't in the centre
 	{
 		float xDistance = input->getMouseX() - width / 2; //Figure out how far (X) the mouse is from the centre
 		camera.rotateYaw(xDistance, dt);//Turn camera by that distance horizontally
-		overView.rotateYaw(xDistance, dt);//Turn camera by that distance horizontally
+		//overView.rotateYaw(xDistance, dt);//Turn camera by that distance horizontally
 	}
-	if (input->getMouseY() != 0.0f) //If mouse isn't in the centre
+	if (input->getMouseY() != 0.0f && cameraViews == MAIN) //If mouse isn't in the centre
 	{
 		float yDistance = input->getMouseY() - height / 2;//Figure out how far (Y) the mouse is from the centre
 		camera.rotatePitch(yDistance, dt);//turn camera by that distance vertically
-		overView.rotatePitch(yDistance, dt);//turn camera by that distance vertically
+		//overView.rotatePitch(yDistance, dt);//turn camera by that distance vertically
 	}
 	glutWarpPointer(width/2, height/2); //Set mouse to centre
 	
@@ -302,10 +314,13 @@ void Scene::update(float dt)
 	beastView.update(dt);
 	overView.update(dt);
 
-	overView.setLookAt(Vector3(-2.0f, 20.0f, -16.0f));
+	//overView.setLookAt(Vector3(-2.0f, 20.0f, -16.0f));
 
 	//Update rotation
 	rotation += 20 * dt;
+
+	//Update overview camera's yaw
+	overView.setYaw(overViewRotation);
 
 	//Update spotlight position
 	
@@ -353,9 +368,10 @@ void Scene::render() {
 	}
 	else if (cameraViews == OVER)
 	{
-		glTranslatef(0.0f, 0.0f, rotation / 30);
+		glTranslatef(0.0f, 250.0f, 0.0f);
+		//renderSkyBox(overView);
 		gluLookAt(overView.getPosition().x, overView.getPosition().y, overView.getPosition().z, overView.getLookAt().x, overView.getLookAt().y, overView.getLookAt().z, overView.getUp().x, overView.getUp().y, overView.getUp().z);
-		glTranslatef(0.0f, 0.0f, -rotation / 30);
+		glTranslatef(0.0f, -250.0f, 0.0f);
 	}
 	
 	
@@ -374,7 +390,13 @@ void Scene::render() {
 	}
 	else if (cameraViews == OVER)
 	{
+		glPushMatrix();
+
+		glRotatef(-overViewRotation, 0, 1, 0);
+		glTranslatef(0, 8, 63);
 		renderSkyBox(overView);
+
+		glPopMatrix();
 	}
 	
 
@@ -696,6 +718,25 @@ void Scene::render() {
 				glScalef(0.02f, 0.02f, 0.02f);
 				suicune.render();
 
+				//Suicune's Shadow
+				glPushMatrix();
+
+					glBindTexture(GL_TEXTURE_2D, shadowTex);
+
+					glDisable(GL_LIGHTING);
+					glEnable(GL_BLEND);
+
+					glScalef(50.0f, 50.0f, 50.0f);
+					glColor4f(1.0f, 1.0f, 1.0f, 0.5f);
+					glTranslatef(-4.0f, 0.1f, -4.0f);
+					glRotatef(90, 1, 0, 0);
+					renderQuad(Vector3(2, 2, 0), 4, 4, 0);
+
+					glDisable(GL_BLEND);
+					glEnable(GL_LIGHTING);
+
+				glPopMatrix();
+
 			glPopMatrix();
 
 
@@ -709,8 +750,26 @@ void Scene::render() {
 				glScalef(0.8f, 0.8f, 0.8f);
 				entei.render();
 
-			glPopMatrix();
+				//Entei's Shadow
+				glPushMatrix();
 
+					glBindTexture(GL_TEXTURE_2D, shadowTex);
+
+					glDisable(GL_LIGHTING);
+					glEnable(GL_BLEND);
+
+					glScalef(1.25f, 1.25f, 1.25f);
+					glColor4f(1.0f, 1.0f, 1.0f, 0.5f);
+					glTranslatef(-4.0f, 0.12f, -4.0f);
+					glRotatef(90, 1, 0, 0);
+					renderQuad(Vector3(2, 2, 0), 4, 4, 0);
+
+					glDisable(GL_BLEND);
+					glEnable(GL_LIGHTING);
+
+				glPopMatrix();
+
+			glPopMatrix();
 
 			//RAIKOU
 			glPushMatrix();
@@ -723,16 +782,35 @@ void Scene::render() {
 				glScalef(0.8f, 0.8f, 0.8f);
 				raikou.render();
 
+				//Raikou's Shadow
+				glPushMatrix();
+
+					glBindTexture(GL_TEXTURE_2D, shadowTex);
+
+					glDisable(GL_LIGHTING);
+					glEnable(GL_BLEND);
+
+					glScalef(1.25f, 1.25f, 1.25f);
+					glColor4f(1.0f, 1.0f, 1.0f, 0.5f);
+					glTranslatef(-4.0f, 0.11f, -4.0f);
+					glRotatef(90, 1, 0, 0);
+					renderQuad(Vector3(2, 2, 0), 4, 4, 0);
+
+					glDisable(GL_BLEND);
+					glEnable(GL_LIGHTING);
+
+				glPopMatrix();
+
 			glPopMatrix();
 
 			//OVERVIEW CAMERA SPHERE
 
-			glPushMatrix();
+			/*glPushMatrix();
 				glRotatef(rotation, 0, 1, 0);
 				glTranslatef(0.0f, 35.0f, 50.0f);
 				glColor3f(1.0f, 0.0f, 0.0f);
 				overViewSphere.RenderSphere(20);
-			glPopMatrix();
+			glPopMatrix();*/
 
 			//LIGHT CONES
 			glPushMatrix();
@@ -871,6 +949,10 @@ void Scene::displayText(float x, float y, float r, float g, float b, char* strin
 	glLoadIdentity();
 	gluPerspective(fov, ((float)width/(float)height), nearPlane, farPlane);
 	glMatrixMode(GL_MODELVIEW);
+}
+
+void Scene::cameraOrbit(MyCamera _camera)
+{
 }
 
 void Scene::renderPlane(double x, double y, double z)
