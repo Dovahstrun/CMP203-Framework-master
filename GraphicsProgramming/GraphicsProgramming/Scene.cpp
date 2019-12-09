@@ -277,15 +277,14 @@ void Scene::handleInput(float dt)
 	}
 
 	//Rotation
-	if (input->isKeyDown('o') && cameraViews == MAIN)
-	{
-		camera.rotateLeft();//Rotate left
-	}
-	if (input->isKeyDown('p') && cameraViews == MAIN)
-	{
-		camera.rotateRight();//Rotate right
-	}
-
+	//if (input->isKeyDown('o') && cameraViews == MAIN)
+	//{
+	//	camera.rotateLeft();//Rotate left
+	//}
+	//if (input->isKeyDown('p') && cameraViews == MAIN)
+	//{
+	//	camera.rotateRight();//Rotate right
+	//}
 
 	//Mouse rotation
 	if (input->getMouseX() != 0.0f && cameraViews == MAIN) //If mouse isn't in the centre
@@ -418,15 +417,17 @@ void Scene::render() {
 
 	GLfloat LightDirection[] = { 0.0f, -1.0, 0.0f, 1.0f };
 
-	
+	//Light 0 is for Ho-oh, it is a point light
 	glPushMatrix();
 
-		glTranslatef(-2.0f, 31.0f, -16.0f);
+		glTranslatef(-2.0f, 31.0f, -16.0f); //Translate to where Ho-oh is
 
+		//Set up the attenuation values for Ho-oh's light
 		glLightf(GL_LIGHT0, GL_CONSTANT_ATTENUATION, 1.0);
 		glLightf(GL_LIGHT0, GL_LINEAR_ATTENUATION, 0.25);
 		glLightf(GL_LIGHT0, GL_QUADRATIC_ATTENUATION, 0.01);
 
+		//Set up the basic lighting for the point light
 		glLightfv(GL_LIGHT0, GL_AMBIENT, Light_Ambient);
 		glLightfv(GL_LIGHT0, GL_DIFFUSE, Light_DiffuseHooh);
 		glLightfv(GL_LIGHT0, GL_POSITION, Light_PositionHooh);
@@ -434,6 +435,7 @@ void Scene::render() {
 
 	glPopMatrix();
 
+	//Set up the world's directional light
 	glLightfv(GL_LIGHT1, GL_AMBIENT, Light_Ambient);
 	glLightfv(GL_LIGHT1, GL_DIFFUSE, Light_Diffuse);
 	glLightfv(GL_LIGHT1, GL_POSITION, Light_Position);
@@ -460,9 +462,9 @@ void Scene::render() {
 	// Render geometry/scene here -------------------------------------
 
 	//Render plane -------------------------------------
-	for (double i = -10; i < 100; i += 1)
+	for (double i = -10; i < 100; ++i)
 	{
-		for (double j = -10; j < 100; j += 1)
+		for (double j = -10; j < 100; ++j)
 		{
 			renderPlane(i, 0.0f, j);
 		}
@@ -802,15 +804,6 @@ void Scene::render() {
 				glPopMatrix();
 
 			glPopMatrix();
-
-			//OVERVIEW CAMERA SPHERE
-
-			/*glPushMatrix();
-				glRotatef(rotation, 0, 1, 0);
-				glTranslatef(0.0f, 35.0f, 50.0f);
-				glColor3f(1.0f, 0.0f, 0.0f);
-				overViewSphere.RenderSphere(20);
-			glPopMatrix();*/
 
 			//LIGHT CONES
 			glPushMatrix();
