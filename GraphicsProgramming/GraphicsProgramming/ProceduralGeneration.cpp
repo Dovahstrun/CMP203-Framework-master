@@ -15,24 +15,23 @@ void ProceduralGeneration::RenderDisk(int sides)
 		//texture vertex
 		glTexCoord2f(0.5, -0.5);
 		glNormal3f(0.0f, 0.0f, 1.0f);
-		//create center vertice
+		//center vertice
 		glVertex3f(0, 0, 0);
 
 		//texture vertex		
 		glTexCoord2f(cos(angle) / 2 + 0.5, -(sin(angle) / 2 + 0.5));
 		glNormal3f(0.0f, 0.0f, 1.0f);
-		//create first outer vertex
+		//first outer vertex
 		glVertex3f(cos(angle), sin(angle), 0);
 
 		//texture vertex
 		glTexCoord2f(cos(angle + interval) / 2 + 0.5, -(sin(angle + interval) / 2 + 0.5));
 		glNormal3f(0.0f, 0.0f, 1.0f);
-		//based on angle create other vertex
+		//create other vertex based on angle
 		glVertex3f(cos(angle + interval), sin(angle + interval), 0);
 
 		angle += interval;
 	}
-	//texture Final vertex
 	//create final vertex
 	glVertex3f(cos(0), sin(0), 0);
 	glEnd();

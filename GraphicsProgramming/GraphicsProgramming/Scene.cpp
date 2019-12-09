@@ -191,7 +191,6 @@ Scene::Scene(Input *in)
 	beastView.setPitch(-20);
 
 	overView.setPosition(Vector3(-2.0f, 20.0f, -14.0f));
-	/*overView.setPosition(Vector3(0.0f, 0.0f, 0.0f));*/
 	overView.setYaw(0);
 	overView.setPitch(-15);
 }
@@ -291,13 +290,11 @@ void Scene::handleInput(float dt)
 	{
 		float xDistance = input->getMouseX() - width / 2; //Figure out how far (X) the mouse is from the centre
 		camera.rotateYaw(xDistance, dt);//Turn camera by that distance horizontally
-		//overView.rotateYaw(xDistance, dt);//Turn camera by that distance horizontally
 	}
 	if (input->getMouseY() != 0.0f && cameraViews == MAIN) //If mouse isn't in the centre
 	{
 		float yDistance = input->getMouseY() - height / 2;//Figure out how far (Y) the mouse is from the centre
 		camera.rotatePitch(yDistance, dt);//turn camera by that distance vertically
-		//overView.rotatePitch(yDistance, dt);//turn camera by that distance vertically
 	}
 	glutWarpPointer(width/2, height/2); //Set mouse to centre
 	
@@ -352,6 +349,7 @@ void Scene::render() {
 
 	// Reset transformations
 	glLoadIdentity();
+
 	// Set the camera
 	if (cameraViews == MAIN)
 	{
@@ -389,13 +387,7 @@ void Scene::render() {
 	}
 	else if (cameraViews == OVER)
 	{
-		glPushMatrix();
-
-		glRotatef(-overViewRotation, 0, 1, 0);
-		glTranslatef(0, 8, 63);
 		renderSkyBox(overView);
-
-		glPopMatrix();
 	}
 	
 
